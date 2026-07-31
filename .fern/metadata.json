@@ -8,9 +8,9 @@
       "path": "github.com/apologist-project/apg-sdk-go"
     }
   },
-  "originGitCommit": "9b914d6733030fe2a15153e34f0b940402dfc559",
-  "originGitCommitIsDirty": true,
-  "invokedBy": "manual",
-  "requestedVersion": "1.0.3",
-  "sdkVersion": "v1.0.3"
+  "originGitCommit": "260686d6daa2090b871f8509b0b2661bc33c170c",
+  "originGitCommitIsDirty": false,
+  "invokedBy": "ci",
+  "ciProvider": "github",
+  "sdkVersion": "v1.0.4"
 }
