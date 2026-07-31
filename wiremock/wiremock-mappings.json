@@ -1,8 +1,8 @@
 {
   "mappings": [
     {
-      "id": "262bbc4d-9f24-44e3-9f1d-ae11374765d5",
-      "name": "List chat completions - default",
+      "id": "0f321c12-a4ea-45c4-80c5-0e3af7909324",
+      "name": "List Chat Completions - default",
       "request": {
         "urlPathTemplate": "/chat/completions",
         "method": "GET",
@@ -19,7 +19,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "262bbc4d-9f24-44e3-9f1d-ae11374765d5",
+      "uuid": "0f321c12-a4ea-45c4-80c5-0e3af7909324",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -33,8 +33,8 @@
       "postServeActions": []
     },
     {
-      "id": "f0f76773-feec-416a-8603-f4e624283109",
-      "name": "Create a chat completion - default",
+      "id": "c8a2e905-60ed-43d5-85fa-0cb0fe80df88",
+      "name": "Create Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions",
         "method": "POST",
@@ -51,7 +51,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "f0f76773-feec-416a-8603-f4e624283109",
+      "uuid": "c8a2e905-60ed-43d5-85fa-0cb0fe80df88",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -64,8 +64,8 @@
       }
     },
     {
-      "id": "830c513c-cc19-4c2d-ad6c-96c0fd181071",
-      "name": "Like or unlike a chat completion - default",
+      "id": "79036e3b-8830-44e2-9ab4-dc9b04b3caf4",
+      "name": "Like / Unlike Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}/like",
         "method": "POST",
@@ -87,7 +87,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "830c513c-cc19-4c2d-ad6c-96c0fd181071",
+      "uuid": "79036e3b-8830-44e2-9ab4-dc9b04b3caf4",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -100,8 +100,8 @@
       }
     },
     {
-      "id": "35450ea1-6b2d-4536-a4a7-cda0dd79970a",
-      "name": "Flag or unflag a chat completion - default",
+      "id": "9fe3abf9-5ccc-4217-9e1b-08e87d4cf237",
+      "name": "Flag / Unflag Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}/flag",
         "method": "POST",
@@ -123,7 +123,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "35450ea1-6b2d-4536-a4a7-cda0dd79970a",
+      "uuid": "9fe3abf9-5ccc-4217-9e1b-08e87d4cf237",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -136,8 +136,8 @@
       }
     },
     {
-      "id": "982fb336-c4c8-4b16-bf79-f05b35ef1a02",
-      "name": "Submit feedback for a chat completion - default",
+      "id": "694a164b-8257-4dd3-a516-6b1fa88dec21",
+      "name": "Submit Feedback for Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}/feedback",
         "method": "POST",
@@ -159,7 +159,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "982fb336-c4c8-4b16-bf79-f05b35ef1a02",
+      "uuid": "694a164b-8257-4dd3-a516-6b1fa88dec21",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -172,8 +172,8 @@
       }
     },
     {
-      "id": "782806b1-0235-40c8-811f-5e73959fcf81",
-      "name": "Share a chat completion - default",
+      "id": "f3ad85e6-1c2d-4f6e-9bbe-5c69f95dfc22",
+      "name": "Share Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}/share",
         "method": "POST",
@@ -195,7 +195,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "782806b1-0235-40c8-811f-5e73959fcf81",
+      "uuid": "f3ad85e6-1c2d-4f6e-9bbe-5c69f95dfc22",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -208,8 +208,8 @@
       }
     },
     {
-      "id": "188c34d7-44e6-41b2-b02e-5c39d3f5a375",
-      "name": "Get a chat completion - default",
+      "id": "1c98cf6d-96e5-4a5c-ad1d-865533fe77c9",
+      "name": "Get Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}",
         "method": "GET",
@@ -231,7 +231,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "188c34d7-44e6-41b2-b02e-5c39d3f5a375",
+      "uuid": "1c98cf6d-96e5-4a5c-ad1d-865533fe77c9",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -244,8 +244,8 @@
       }
     },
     {
-      "id": "0a37ef73-711e-42f8-bac3-943c0fe6e8f2",
-      "name": "Search the corpus - default",
+      "id": "62ea55af-0147-46b3-8d62-ef142ed14e51",
+      "name": "Search Corpus - default",
       "request": {
         "urlPathTemplate": "/corpus/search",
         "method": "POST",
@@ -262,7 +262,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "0a37ef73-711e-42f8-bac3-943c0fe6e8f2",
+      "uuid": "62ea55af-0147-46b3-8d62-ef142ed14e51",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -275,8 +275,8 @@
       }
     },
     {
-      "id": "929aa1d7-1ec3-4b80-8bcb-d0a345db9987",
-      "name": "Log a corpus item view - default",
+      "id": "190ef225-4c53-41cf-852b-304a7efe995f",
+      "name": "Log Corpus Item View - default",
       "request": {
         "urlPathTemplate": "/corpus/{model}/{id}/view",
         "method": "POST",
@@ -301,7 +301,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "929aa1d7-1ec3-4b80-8bcb-d0a345db9987",
+      "uuid": "190ef225-4c53-41cf-852b-304a7efe995f",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -314,8 +314,8 @@
       }
     },
     {
-      "id": "e42f18b7-a553-43e2-b763-78647a2af10e",
-      "name": "Log a corpus item impression - default",
+      "id": "c6c6d961-552e-4cbe-b05d-1dd6b18f9a16",
+      "name": "Log Corpus Item Impression - default",
       "request": {
         "urlPathTemplate": "/corpus/{model}/{id}/impression",
         "method": "POST",
@@ -340,7 +340,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "e42f18b7-a553-43e2-b763-78647a2af10e",
+      "uuid": "c6c6d961-552e-4cbe-b05d-1dd6b18f9a16",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -353,8 +353,8 @@
       }
     },
     {
-      "id": "aa5f118f-5167-4424-b9fd-4f0ed06443c2",
-      "name": "Log a corpus item referral (redirect) - default",
+      "id": "4924f436-22c9-415a-b500-da9103171a08",
+      "name": "Log Corpus Item Referral & Redirect - default",
       "request": {
         "urlPathTemplate": "/corpus/{model}/{id}/referral",
         "method": "GET",
@@ -384,7 +384,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "aa5f118f-5167-4424-b9fd-4f0ed06443c2",
+      "uuid": "4924f436-22c9-415a-b500-da9103171a08",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -397,8 +397,8 @@
       }
     },
     {
-      "id": "010b449b-036b-41e4-a889-7668552bafd0",
-      "name": "Log a corpus item referral - default",
+      "id": "d13deda0-64ee-4bd7-bff8-47188e12a019",
+      "name": "Log Corpus Item Referral - default",
       "request": {
         "urlPathTemplate": "/corpus/{model}/{id}/referral",
         "method": "POST",
@@ -423,7 +423,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "010b449b-036b-41e4-a889-7668552bafd0",
+      "uuid": "d13deda0-64ee-4bd7-bff8-47188e12a019",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -436,8 +436,8 @@
       }
     },
     {
-      "id": "562b4cd2-3cde-4bc4-b1a2-e36a761b4573",
-      "name": "List evaluations - default",
+      "id": "312aa671-ed36-4921-8bfe-26e2322a43e4",
+      "name": "List Evaluations - default",
       "request": {
         "urlPathTemplate": "/evaluators/{id}/evaluations",
         "method": "GET",
@@ -459,7 +459,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "562b4cd2-3cde-4bc4-b1a2-e36a761b4573",
+      "uuid": "312aa671-ed36-4921-8bfe-26e2322a43e4",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -472,8 +472,8 @@
       }
     },
     {
-      "id": "f2c0ec21-1d51-4bd8-8f09-eb85615e9427",
-      "name": "Evaluate content using an evaluator - default",
+      "id": "3ce7ac39-45b5-4da0-9f8d-ad57a6212a26",
+      "name": "Create Evaluation - default",
       "request": {
         "urlPathTemplate": "/evaluators/{id}/evaluations",
         "method": "POST",
@@ -495,7 +495,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "f2c0ec21-1d51-4bd8-8f09-eb85615e9427",
+      "uuid": "3ce7ac39-45b5-4da0-9f8d-ad57a6212a26",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -508,8 +508,8 @@
       }
     },
     {
-      "id": "75ade847-ead7-4d3e-a4c7-0b15eb2aa8f4",
-      "name": "Get an evaluation - default",
+      "id": "fa64d861-d444-4016-9a55-28b723052519",
+      "name": "Get Evaluation - default",
       "request": {
         "urlPathTemplate": "/evaluators/{id}/evaluations/{evaluationId}",
         "method": "GET",
@@ -534,7 +534,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "75ade847-ead7-4d3e-a4c7-0b15eb2aa8f4",
+      "uuid": "fa64d861-d444-4016-9a55-28b723052519",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -547,8 +547,8 @@
       }
     },
     {
-      "id": "a86b74ec-980a-4823-b5d6-719e4c94cf17",
-      "name": "Match CTAs (Call-to-Actions) - default",
+      "id": "91799810-eb50-48e5-91c2-6c7539d64820",
+      "name": "Match Calls to Action - default",
       "request": {
         "urlPathTemplate": "/ctas/match",
         "method": "POST",
@@ -565,7 +565,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "a86b74ec-980a-4823-b5d6-719e4c94cf17",
+      "uuid": "91799810-eb50-48e5-91c2-6c7539d64820",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -578,8 +578,8 @@
       }
     },
     {
-      "id": "38655c48-36d0-43a7-b036-be184534d73a",
-      "name": "Log a CTA click - default",
+      "id": "f1e25ab2-c187-43dd-b7ab-985f77025356",
+      "name": "Log CTA Click - default",
       "request": {
         "urlPathTemplate": "/ctas/{id}/click",
         "method": "POST",
@@ -601,7 +601,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "38655c48-36d0-43a7-b036-be184534d73a",
+      "uuid": "f1e25ab2-c187-43dd-b7ab-985f77025356",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -614,8 +614,8 @@
       }
     },
     {
-      "id": "7c4bd357-8b8b-4ec0-9fdf-999d2fccc32c",
-      "name": "List users - default",
+      "id": "16893c05-93b4-4858-b32c-744f00dd1f2a",
+      "name": "List Users - default",
       "request": {
         "urlPathTemplate": "/users",
         "method": "GET",
@@ -632,7 +632,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "7c4bd357-8b8b-4ec0-9fdf-999d2fccc32c",
+      "uuid": "16893c05-93b4-4858-b32c-744f00dd1f2a",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -646,8 +646,8 @@
       "postServeActions": []
     },
     {
-      "id": "92ddb364-3fce-4379-bf38-12248c934fec",
-      "name": "List user flag definitions - default",
+      "id": "091e2ea6-420e-41d4-b9ff-19fed0baf39c",
+      "name": "List User Flags - default",
       "request": {
         "urlPathTemplate": "/users/flags",
         "method": "GET",
@@ -664,7 +664,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "92ddb364-3fce-4379-bf38-12248c934fec",
+      "uuid": "091e2ea6-420e-41d4-b9ff-19fed0baf39c",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -678,8 +678,8 @@
       "postServeActions": []
     },
     {
-      "id": "43f6fba8-26f4-4980-821e-da1275a40f2b",
-      "name": "Get a user - default",
+      "id": "72440bf5-4ef8-4c1b-a348-6f0c59356132",
+      "name": "Get User - default",
       "request": {
         "urlPathTemplate": "/users/{user_id}",
         "method": "GET",
@@ -701,7 +701,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "43f6fba8-26f4-4980-821e-da1275a40f2b",
+      "uuid": "72440bf5-4ef8-4c1b-a348-6f0c59356132",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -714,8 +714,8 @@
       }
     },
     {
-      "id": "7067d8f1-b34a-4c54-9545-15a19ec26080",
-      "name": "Update a user - default",
+      "id": "b9108372-55c5-4237-a169-bcbe6f8354b9",
+      "name": "Update User - default",
       "request": {
         "urlPathTemplate": "/users/{user_id}",
         "method": "PATCH",
@@ -737,7 +737,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "7067d8f1-b34a-4c54-9545-15a19ec26080",
+      "uuid": "b9108372-55c5-4237-a169-bcbe6f8354b9",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -750,8 +750,8 @@
       }
     },
     {
-      "id": "cc53147b-d1db-4b37-b145-e9e3ced6eb58",
-      "name": "List benchmark runs - default",
+      "id": "e13d0d64-93a7-4eac-898a-59ad71f3f359",
+      "name": "List Benchmark Runs - default",
       "request": {
         "urlPathTemplate": "/benchmarks/{id}/runs",
         "method": "GET",
@@ -773,7 +773,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "cc53147b-d1db-4b37-b145-e9e3ced6eb58",
+      "uuid": "e13d0d64-93a7-4eac-898a-59ad71f3f359",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -786,8 +786,8 @@
       }
     },
     {
-      "id": "1c804a80-a464-4006-b1fd-a113fe3b1d6e",
-      "name": "Run a benchmark - default",
+      "id": "9d703f3c-8718-4a96-89bd-d37ce70fccef",
+      "name": "Create Benchmark Run - default",
       "request": {
         "urlPathTemplate": "/benchmarks/{id}/runs",
         "method": "POST",
@@ -809,7 +809,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "1c804a80-a464-4006-b1fd-a113fe3b1d6e",
+      "uuid": "9d703f3c-8718-4a96-89bd-d37ce70fccef",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -822,8 +822,8 @@
       }
     },
     {
-      "id": "581a397c-479d-46a6-9d08-727b19ae4ab9",
-      "name": "Get a benchmark run - default",
+      "id": "d058a7af-2ed9-4e19-8fda-6eeafe6fb477",
+      "name": "Get Benchmark Run - default",
       "request": {
         "urlPathTemplate": "/benchmarks/{id}/runs/{runId}",
         "method": "GET",
@@ -848,7 +848,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "581a397c-479d-46a6-9d08-727b19ae4ab9",
+      "uuid": "d058a7af-2ed9-4e19-8fda-6eeafe6fb477",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -861,8 +861,8 @@
       }
     },
     {
-      "id": "90bffab4-0e28-4e1a-813c-120c18b6b4c2",
-      "name": "Discord channel status - default",
+      "id": "eb2c062c-2b6b-4f40-8363-245debb59684",
+      "name": "Discord Channel Status - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/discord",
         "method": "GET",
@@ -879,7 +879,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "90bffab4-0e28-4e1a-813c-120c18b6b4c2",
+      "uuid": "eb2c062c-2b6b-4f40-8363-245debb59684",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -892,8 +892,8 @@
       }
     },
     {
-      "id": "50f0cd38-e4d2-4e35-b14c-fd5a56ed7db1",
-      "name": "Discord interaction webhook - default",
+      "id": "716a50a4-c91a-4ba5-bb13-e7d078ed49d2",
+      "name": "Discord Interaction Webhook - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/discord",
         "method": "POST",
@@ -910,7 +910,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "50f0cd38-e4d2-4e35-b14c-fd5a56ed7db1",
+      "uuid": "716a50a4-c91a-4ba5-bb13-e7d078ed49d2",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -923,8 +923,8 @@
       }
     },
     {
-      "id": "c4c6c04b-fd03-4a4b-b5b6-b8d02fba3a9d",
-      "name": "Facebook/Messenger webhook verification - default",
+      "id": "5fef5f0c-c2a7-4f1b-8fa6-7ae4d53fa94f",
+      "name": "Facebook/Messenger Webhook Verification - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/facebook",
         "method": "GET",
@@ -949,7 +949,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "c4c6c04b-fd03-4a4b-b5b6-b8d02fba3a9d",
+      "uuid": "5fef5f0c-c2a7-4f1b-8fa6-7ae4d53fa94f",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -962,8 +962,8 @@
       }
     },
     {
-      "id": "bdb69fa4-3c3c-4eb8-a59c-612d6c1831f6",
-      "name": "Facebook/Messenger message webhook - default",
+      "id": "d9865d9b-74a3-4403-9a59-8f4434d1221d",
+      "name": "Facebook/Messenger Message Webhook - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/facebook",
         "method": "POST",
@@ -980,7 +980,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "bdb69fa4-3c3c-4eb8-a59c-612d6c1831f6",
+      "uuid": "d9865d9b-74a3-4403-9a59-8f4434d1221d",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -993,8 +993,8 @@
       }
     },
     {
-      "id": "b4e82ef9-92d0-4636-974c-88b3fdefaee2",
-      "name": "Instagram integration privacy policy - default",
+      "id": "17dbfde2-f50e-411b-adb9-8bf9770a2f80",
+      "name": "Instagram Integration Privacy Policy - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/instagram/privacy",
         "method": "GET",
@@ -1011,7 +1011,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "b4e82ef9-92d0-4636-974c-88b3fdefaee2",
+      "uuid": "17dbfde2-f50e-411b-adb9-8bf9770a2f80",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1024,8 +1024,8 @@
       }
     },
     {
-      "id": "ad3d8496-05e7-4c6c-acf1-bab247207177",
-      "name": "Telegram message webhook - default",
+      "id": "e9d0f9ec-94a8-4b1e-851f-f7db9ed0a2f0",
+      "name": "Telegram Message Webhook - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/telegram",
         "method": "POST",
@@ -1042,7 +1042,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "ad3d8496-05e7-4c6c-acf1-bab247207177",
+      "uuid": "e9d0f9ec-94a8-4b1e-851f-f7db9ed0a2f0",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1055,8 +1055,8 @@
       }
     },
     {
-      "id": "27ee6cce-81cd-4b44-88b1-cfaf5806d20b",
-      "name": "Twilio SMS/WhatsApp webhook - default",
+      "id": "d48e6b4e-14ed-458e-9ed8-ac73b08ddf80",
+      "name": "Twilio SMS/WhatsApp Webhook - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/twilio",
         "method": "POST",
@@ -1073,7 +1073,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "27ee6cce-81cd-4b44-88b1-cfaf5806d20b",
+      "uuid": "d48e6b4e-14ed-458e-9ed8-ac73b08ddf80",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1086,8 +1086,8 @@
       }
     },
     {
-      "id": "0f2ac1be-b1aa-44cd-82f7-a9306480ad4b",
-      "name": "Get shared conversation messages - default",
+      "id": "605a6fd8-3b32-48df-8874-bf924e243279",
+      "name": "Get Share Messages - default",
       "request": {
         "urlPathTemplate": "/shares/{token}",
         "method": "GET",
@@ -1104,7 +1104,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "0f2ac1be-b1aa-44cd-82f7-a9306480ad4b",
+      "uuid": "605a6fd8-3b32-48df-8874-bf924e243279",
       "persistent": true,
       "priority": 3,
       "metadata": {

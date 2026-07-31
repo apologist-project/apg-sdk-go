@@ -3,12 +3,14 @@
   "generatorName": "fernapi/fern-go-sdk",
   "generatorVersion": "1.54.0",
   "generatorConfig": {
+    "clientName": "ApologistAgentClient",
     "module": {
       "path": "github.com/apologist-project/apg-sdk-go"
     }
   },
-  "originGitCommit": "bed785c05c5bfb53f26bc1e786c4361a189f15b4",
+  "originGitCommit": "9b914d6733030fe2a15153e34f0b940402dfc559",
   "originGitCommitIsDirty": true,
   "invokedBy": "manual",
-  "sdkVersion": "v0.0.0"
+  "requestedVersion": "1.0.3",
+  "sdkVersion": "v1.0.3"
 }

@@ -84,7 +84,7 @@ func TestSharesGetSharedMessagesWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.GetSharedMessagesRequest{

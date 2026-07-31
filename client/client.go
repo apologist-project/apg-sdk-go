@@ -19,7 +19,7 @@ import (
 	users "github.com/apologist-project/apg-sdk-go/users"
 )
 
-type Client struct {
+type ApologistAgentClient struct {
 	Chat       *chat.Client
 	Corpus     *corpus.Client
 	Evaluators *evaluators.Client
@@ -34,7 +34,7 @@ type Client struct {
 	caller  *internal.Caller
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
+func NewApologistAgentClient(opts ...option.RequestOption) *ApologistAgentClient {
 	options := core.NewRequestOptions(opts...)
 	if options.Domain != "" {
 		domain := options.Domain
@@ -49,7 +49,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 			)
 		}
 	}
-	return &Client{
+	return &ApologistAgentClient{
 		Chat:       chat.NewClient(options),
 		Corpus:     corpus.NewClient(options),
 		Evaluators: evaluators.NewClient(options),

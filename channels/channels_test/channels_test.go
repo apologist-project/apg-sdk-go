@@ -84,7 +84,7 @@ func TestChannelsGetDiscordChannelStatusWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.GetDiscordChannelStatusRequest{
@@ -109,7 +109,7 @@ func TestChannelsReceiveDiscordInteractionWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.ReceiveDiscordInteractionRequest{
@@ -139,7 +139,7 @@ func TestChannelsVerifyFacebookWebhookWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.VerifyFacebookWebhookRequest{
@@ -166,7 +166,7 @@ func TestChannelsReceiveFacebookMessageWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.ReceiveFacebookMessageRequest{
@@ -194,7 +194,7 @@ func TestChannelsGetInstagramPrivacyPolicyWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.GetInstagramPrivacyPolicyRequest{
@@ -219,7 +219,7 @@ func TestChannelsReceiveTelegramUpdateWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.ReceiveTelegramUpdateRequest{
@@ -247,7 +247,7 @@ func TestChannelsReceiveTwilioMessageWithWireMock(
 	if WireMockBaseURL == "" {
 		WireMockBaseURL = "http://localhost:8080"
 	}
-	client := client.NewClient(
+	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &apgsdkgo.ReceiveTwilioMessageRequest{
