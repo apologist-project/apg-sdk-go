@@ -1,0 +1,14 @@
+{
+  "cliVersion": "5.72.1",
+  "generatorName": "fernapi/fern-go-sdk",
+  "generatorVersion": "1.54.0",
+  "generatorConfig": {
+    "module": {
+      "path": "github.com/apologist-project/apg-sdk-go"
+    }
+  },
+  "originGitCommit": "bed785c05c5bfb53f26bc1e786c4361a189f15b4",
+  "originGitCommitIsDirty": true,
+  "invokedBy": "manual",
+  "sdkVersion": "v0.0.0"
+}
