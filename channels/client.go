@@ -93,6 +93,63 @@ func (c *Client) ReceiveDiscordInteraction(
 	return nil
 }
 
+// Returns the status of the LINE channel. Used as a lightweight health/verification endpoint.
+//
+// Example:
+//
+//	request := &apgsdkgo.GetLineChannelStatusRequest{
+//	    ID: "id",
+//	}
+//	client.Channels.GetLineChannelStatus(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) GetLineChannelStatus(
+	ctx context.Context,
+	request *apgsdkgo.GetLineChannelStatusRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.GetLineChannelStatusResponse, error) {
+	response, err := c.WithRawResponse.GetLineChannelStatus(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Receives LINE Messaging API webhook events for the channel. Requests are verified via the `x-line-signature` HMAC-SHA256 (Base64) header using the channel secret unless an `api_key` is present. Payload shape is defined by LINE. The route acknowledges quickly and processes text `message` and `follow` events asynchronously.
+//
+// Example:
+//
+//	request := &apgsdkgo.ReceiveLineWebhookRequest{
+//	    ID: "id",
+//	    Body: map[string]any{
+//	        "key": "value",
+//	    },
+//	}
+//	client.Channels.ReceiveLineWebhook(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ReceiveLineWebhook(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveLineWebhookRequest,
+	opts ...option.RequestOption,
+) error {
+	_, err := c.WithRawResponse.ReceiveLineWebhook(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Handles the Meta webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
 //
 // Example:

@@ -62,6 +62,32 @@ func (g *GetInstagramPrivacyPolicyRequest) SetID(id string) {
 }
 
 var (
+	getLineChannelStatusRequestFieldID = big.NewInt(1 << 0)
+)
+
+type GetLineChannelStatusRequest struct {
+	// The channel id
+	ID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetLineChannelStatusRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetLineChannelStatusRequest) SetID(id string) {
+	g.ID = id
+	g.require(getLineChannelStatusRequestFieldID)
+}
+
+var (
 	receiveDiscordInteractionRequestFieldSignatureEd25519   = big.NewInt(1 << 0)
 	receiveDiscordInteractionRequestFieldSignatureTimestamp = big.NewInt(1 << 1)
 	receiveDiscordInteractionRequestFieldID                 = big.NewInt(1 << 2)
@@ -158,6 +184,56 @@ func (r *ReceiveFacebookMessageRequest) UnmarshalJSON(data []byte) error {
 }
 
 func (r *ReceiveFacebookMessageRequest) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.Body)
+}
+
+var (
+	receiveLineWebhookRequestFieldLineSignature = big.NewInt(1 << 0)
+	receiveLineWebhookRequestFieldID            = big.NewInt(1 << 1)
+)
+
+type ReceiveLineWebhookRequest struct {
+	// Base64-encoded HMAC-SHA256 of the raw body keyed with the LINE channel secret. Required when the webhook URL does not include an api_key.
+	LineSignature *string `json:"-" url:"-"`
+	// The channel id
+	ID   string         `json:"-" url:"-"`
+	Body map[string]any `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (r *ReceiveLineWebhookRequest) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetLineSignature sets the LineSignature field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveLineWebhookRequest) SetLineSignature(lineSignature *string) {
+	r.LineSignature = lineSignature
+	r.require(receiveLineWebhookRequestFieldLineSignature)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveLineWebhookRequest) SetID(id string) {
+	r.ID = id
+	r.require(receiveLineWebhookRequestFieldID)
+}
+
+func (r *ReceiveLineWebhookRequest) UnmarshalJSON(data []byte) error {
+	var body map[string]any
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	r.Body = body
+	return nil
+}
+
+func (r *ReceiveLineWebhookRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.Body)
 }
 
@@ -368,6 +444,122 @@ func (g *GetDiscordChannelStatusResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GetDiscordChannelStatusResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+var (
+	getLineChannelStatusResponseFieldStatus  = big.NewInt(1 << 0)
+	getLineChannelStatusResponseFieldChannel = big.NewInt(1 << 1)
+	getLineChannelStatusResponseFieldActive  = big.NewInt(1 << 2)
+)
+
+type GetLineChannelStatusResponse struct {
+	Status  *string `json:"status,omitempty" url:"status,omitempty"`
+	Channel *string `json:"channel,omitempty" url:"channel,omitempty"`
+	Active  *bool   `json:"active,omitempty" url:"active,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GetLineChannelStatusResponse) GetStatus() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Status
+}
+
+func (g *GetLineChannelStatusResponse) GetChannel() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Channel
+}
+
+func (g *GetLineChannelStatusResponse) GetActive() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.Active
+}
+
+func (g *GetLineChannelStatusResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GetLineChannelStatusResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetLineChannelStatusResponse) SetStatus(status *string) {
+	g.Status = status
+	g.require(getLineChannelStatusResponseFieldStatus)
+}
+
+// SetChannel sets the Channel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetLineChannelStatusResponse) SetChannel(channel *string) {
+	g.Channel = channel
+	g.require(getLineChannelStatusResponseFieldChannel)
+}
+
+// SetActive sets the Active field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetLineChannelStatusResponse) SetActive(active *bool) {
+	g.Active = active
+	g.require(getLineChannelStatusResponseFieldActive)
+}
+
+func (g *GetLineChannelStatusResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetLineChannelStatusResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GetLineChannelStatusResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GetLineChannelStatusResponse) MarshalJSON() ([]byte, error) {
+	type embed GetLineChannelStatusResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GetLineChannelStatusResponse) String() string {
 	if g == nil {
 		return "<nil>"
 	}

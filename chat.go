@@ -568,9 +568,10 @@ var (
 	chatCompletionRequestMetadataFieldParentHost   = big.NewInt(1 << 5)
 	chatCompletionRequestMetadataFieldSession      = big.NewInt(1 << 6)
 	chatCompletionRequestMetadataFieldDevice       = big.NewInt(1 << 7)
-	chatCompletionRequestMetadataFieldSharedPrompt = big.NewInt(1 << 8)
-	chatCompletionRequestMetadataFieldTranslation  = big.NewInt(1 << 9)
-	chatCompletionRequestMetadataFieldVariables    = big.NewInt(1 << 10)
+	chatCompletionRequestMetadataFieldReferralCode = big.NewInt(1 << 8)
+	chatCompletionRequestMetadataFieldSharedPrompt = big.NewInt(1 << 9)
+	chatCompletionRequestMetadataFieldTranslation  = big.NewInt(1 << 10)
+	chatCompletionRequestMetadataFieldVariables    = big.NewInt(1 << 11)
 )
 
 type ChatCompletionRequestMetadata struct {
@@ -582,6 +583,8 @@ type ChatCompletionRequestMetadata struct {
 	ParentHost   *string `json:"parent_host,omitempty" url:"parent_host,omitempty"`
 	Session      *string `json:"session,omitempty" url:"session,omitempty"`
 	Device       *string `json:"device,omitempty" url:"device,omitempty"`
+	// Acquisition / campaign referral code stored on the user first-write-wins. Empty values are ignored; an existing user referral_code is never overwritten. The Agent UI maps ?ref=, then ?referral_code=, then ?utm_campaign= into this field.
+	ReferralCode *string `json:"referral_code,omitempty" url:"referral_code,omitempty"`
 	SharedPrompt *int    `json:"shared_prompt,omitempty" url:"shared_prompt,omitempty"`
 	Translation  *string `json:"translation,omitempty" url:"translation,omitempty"`
 	// String key/value pairs substituted into `{key}` placeholders in the assembled system prompt. Never persisted; omitted from response metadata. Reserved system keys (language, bible, translation, passages, date/geo tokens) cannot be overridden.
@@ -648,6 +651,13 @@ func (c *ChatCompletionRequestMetadata) GetDevice() *string {
 		return nil
 	}
 	return c.Device
+}
+
+func (c *ChatCompletionRequestMetadata) GetReferralCode() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ReferralCode
 }
 
 func (c *ChatCompletionRequestMetadata) GetSharedPrompt() *int {
@@ -739,6 +749,13 @@ func (c *ChatCompletionRequestMetadata) SetSession(session *string) {
 func (c *ChatCompletionRequestMetadata) SetDevice(device *string) {
 	c.Device = device
 	c.require(chatCompletionRequestMetadataFieldDevice)
+}
+
+// SetReferralCode sets the ReferralCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequestMetadata) SetReferralCode(referralCode *string) {
+	c.ReferralCode = referralCode
+	c.require(chatCompletionRequestMetadataFieldReferralCode)
 }
 
 // SetSharedPrompt sets the SharedPrompt field and marks it as non-optional;
