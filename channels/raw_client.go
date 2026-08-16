@@ -125,6 +125,99 @@ func (r *RawClient) ReceiveDiscordInteraction(
 	}, nil
 }
 
+func (r *RawClient) GetLineChannelStatus(
+	ctx context.Context,
+	request *apgsdkgo.GetLineChannelStatusRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.GetLineChannelStatusResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/line",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.GetLineChannelStatusResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.GetLineChannelStatusResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) ReceiveLineWebhook(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveLineWebhookRequest,
+	opts ...option.RequestOption,
+) (*core.Response[any], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/line",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	if request.LineSignature != nil {
+		headers.Add("x-line-signature", *request.LineSignature)
+	}
+	headers.Add("Content-Type", "application/json")
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[any]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       nil,
+	}, nil
+}
+
 func (r *RawClient) VerifyFacebookWebhook(
 	ctx context.Context,
 	request *apgsdkgo.VerifyFacebookWebhookRequest,

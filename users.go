@@ -254,18 +254,21 @@ func (t *TagRef) String() string {
 var (
 	userFieldID               = big.NewInt(1 << 0)
 	userFieldExternalID       = big.NewInt(1 << 1)
-	userFieldTeamID           = big.NewInt(1 << 2)
-	userFieldCreatedAt        = big.NewInt(1 << 3)
-	userFieldMigratedAt       = big.NewInt(1 << 4)
-	userFieldMigratedToUserID = big.NewInt(1 << 5)
-	userFieldTags             = big.NewInt(1 << 6)
-	userFieldResponderID      = big.NewInt(1 << 7)
+	userFieldReferralCode     = big.NewInt(1 << 2)
+	userFieldTeamID           = big.NewInt(1 << 3)
+	userFieldCreatedAt        = big.NewInt(1 << 4)
+	userFieldMigratedAt       = big.NewInt(1 << 5)
+	userFieldMigratedToUserID = big.NewInt(1 << 6)
+	userFieldTags             = big.NewInt(1 << 7)
+	userFieldResponderID      = big.NewInt(1 << 8)
 )
 
 type User struct {
 	// Internal user id (UUID).
-	ID               *string   `json:"id,omitempty" url:"id,omitempty"`
-	ExternalID       *string   `json:"external_id,omitempty" url:"external_id,omitempty"`
+	ID         *string `json:"id,omitempty" url:"id,omitempty"`
+	ExternalID *string `json:"external_id,omitempty" url:"external_id,omitempty"`
+	// First-write-wins acquisition / campaign referral code.
+	ReferralCode     *string   `json:"referral_code,omitempty" url:"referral_code,omitempty"`
 	TeamID           *int      `json:"team_id,omitempty" url:"team_id,omitempty"`
 	CreatedAt        *string   `json:"created_at,omitempty" url:"created_at,omitempty"`
 	MigratedAt       *string   `json:"migrated_at,omitempty" url:"migrated_at,omitempty"`
@@ -292,6 +295,13 @@ func (u *User) GetExternalID() *string {
 		return nil
 	}
 	return u.ExternalID
+}
+
+func (u *User) GetReferralCode() *string {
+	if u == nil {
+		return nil
+	}
+	return u.ReferralCode
 }
 
 func (u *User) GetTeamID() *int {
@@ -362,6 +372,13 @@ func (u *User) SetID(id *string) {
 func (u *User) SetExternalID(externalID *string) {
 	u.ExternalID = externalID
 	u.require(userFieldExternalID)
+}
+
+// SetReferralCode sets the ReferralCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *User) SetReferralCode(referralCode *string) {
+	u.ReferralCode = referralCode
+	u.require(userFieldReferralCode)
 }
 
 // SetTeamID sets the TeamID field and marks it as non-optional;

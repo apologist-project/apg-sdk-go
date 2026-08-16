@@ -627,7 +627,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"data\": [\n    {\n      \"id\": \"id\",\n      \"external_id\": \"external_id\",\n      \"team_id\": 1,\n      \"created_at\": \"created_at\",\n      \"migrated_at\": \"migrated_at\",\n      \"migrated_to_user_id\": \"migrated_to_user_id\",\n      \"tags\": [\n        {}\n      ],\n      \"responder_id\": 1\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 1\n}",
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"id\",\n      \"external_id\": \"external_id\",\n      \"referral_code\": \"referral_code\",\n      \"team_id\": 1,\n      \"created_at\": \"created_at\",\n      \"migrated_at\": \"migrated_at\",\n      \"migrated_to_user_id\": \"migrated_to_user_id\",\n      \"tags\": [\n        {}\n      ],\n      \"responder_id\": 1\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 1\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -696,7 +696,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"team_id\": 1,\n    \"created_at\": \"created_at\",\n    \"migrated_at\": \"migrated_at\",\n    \"migrated_to_user_id\": \"migrated_to_user_id\",\n    \"tags\": [\n      {}\n    ],\n    \"responder_id\": 1\n  }\n}",
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"referral_code\": \"referral_code\",\n    \"team_id\": 1,\n    \"created_at\": \"created_at\",\n    \"migrated_at\": \"migrated_at\",\n    \"migrated_to_user_id\": \"migrated_to_user_id\",\n    \"tags\": [\n      {}\n    ],\n    \"responder_id\": 1\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -732,7 +732,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"team_id\": 1,\n    \"created_at\": \"created_at\",\n    \"migrated_at\": \"migrated_at\",\n    \"migrated_to_user_id\": \"migrated_to_user_id\",\n    \"tags\": [\n      {}\n    ],\n    \"responder_id\": 1\n  }\n}",
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"referral_code\": \"referral_code\",\n    \"team_id\": 1,\n    \"created_at\": \"created_at\",\n    \"migrated_at\": \"migrated_at\",\n    \"migrated_to_user_id\": \"migrated_to_user_id\",\n    \"tags\": [\n      {}\n    ],\n    \"responder_id\": 1\n  }\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -911,6 +911,68 @@
         }
       },
       "uuid": "716a50a4-c91a-4ba5-bb13-e7d078ed49d2",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "4cfa92ef-0586-429a-9979-5bfddee2fa85",
+      "name": "LINE channel status - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/line",
+        "method": "GET",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"channel\": \"channel\",\n  \"active\": true\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "4cfa92ef-0586-429a-9979-5bfddee2fa85",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "5ef97b8e-04fd-4b57-a1ea-ef1e8f4743d2",
+      "name": "LINE Messaging API webhook - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/line",
+        "method": "POST",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "5ef97b8e-04fd-4b57-a1ea-ef1e8f4743d2",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1118,6 +1180,6 @@
     }
   ],
   "meta": {
-    "total": 32
+    "total": 34
   }
 }

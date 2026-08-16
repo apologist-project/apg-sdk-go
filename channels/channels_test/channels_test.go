@@ -132,6 +132,59 @@ func TestChannelsReceiveDiscordInteractionWithWireMock(
 	VerifyRequestCount(t, "TestChannelsReceiveDiscordInteractionWithWireMock", "POST", "/channels/id/discord", nil, 1)
 }
 
+func TestChannelsGetLineChannelStatusWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.GetLineChannelStatusRequest{
+		ID: "id",
+	}
+	_, invocationErr := client.Channels.GetLineChannelStatus(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsGetLineChannelStatusWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsGetLineChannelStatusWithWireMock", "GET", "/channels/id/line", nil, 1)
+}
+
+func TestChannelsReceiveLineWebhookWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.ReceiveLineWebhookRequest{
+		ID: "id",
+		Body: map[string]any{
+			"key": "value",
+		},
+	}
+	invocationErr := client.Channels.ReceiveLineWebhook(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsReceiveLineWebhookWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsReceiveLineWebhookWithWireMock", "POST", "/channels/id/line", nil, 1)
+}
+
 func TestChannelsVerifyFacebookWebhookWithWireMock(
 	t *testing.T,
 ) {

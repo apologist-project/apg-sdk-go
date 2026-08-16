@@ -876,7 +876,7 @@ client.Corpus.LogCorpusImpression(
 <dl>
 <dd>
 
-Records a referral for a corpus item and, when a `url` is supplied, issues a 302 redirect to it. Without a `url`, responds with a success message. Requires either the search API entitlement or a same-origin request.
+Records a referral for a corpus item and, when a `url` is supplied, issues a 302 redirect to it. Without a `url`, responds with a success message. Requires either the search API entitlement or a signed `browser_key` cookie.
 </dd>
 </dl>
 </dd>
@@ -2391,6 +2391,145 @@ client.Channels.ReceiveDiscordInteraction(
 <dd>
 
 **request:** `map[string]any` — Discord interaction payload.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Channels.GetLineChannelStatus(ID) -> *apgsdkgo.GetLineChannelStatusResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the status of the LINE channel. Used as a lightweight health/verification endpoint.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.GetLineChannelStatusRequest{
+    ID: "id",
+}
+client.Channels.GetLineChannelStatus(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The channel id
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Channels.ReceiveLineWebhook(ID, request) -> error</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Receives LINE Messaging API webhook events for the channel. Requests are verified via the `x-line-signature` HMAC-SHA256 (Base64) header using the channel secret unless an `api_key` is present. Payload shape is defined by LINE. The route acknowledges quickly and processes text `message` and `follow` events asynchronously.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.ReceiveLineWebhookRequest{
+    ID: "id",
+    Body: map[string]any{
+        "key": "value",
+    },
+}
+client.Channels.ReceiveLineWebhook(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The channel id
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**lineSignature:** `*string` — Base64-encoded HMAC-SHA256 of the raw body keyed with the LINE channel secret. Required when the webhook URL does not include an api_key.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `map[string]any` — LINE webhook payload (`destination` + `events`).
     
 </dd>
 </dl>
