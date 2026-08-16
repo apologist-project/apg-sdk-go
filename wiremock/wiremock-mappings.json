@@ -861,6 +861,208 @@
       }
     },
     {
+      "id": "0054e18f-fb29-416d-917b-57bcb7a95e00",
+      "name": "Pause Agent - default",
+      "request": {
+        "urlPathTemplate": "/pause",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"is_paused\": true,\n    \"paused_at\": \"paused_at\",\n    \"resumed_at\": \"resumed_at\",\n    \"emitted\": 1,\n    \"skipped\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "0054e18f-fb29-416d-917b-57bcb7a95e00",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "92575fbf-40fe-419b-b813-ae0d812663d6",
+      "name": "Resume Agent - default",
+      "request": {
+        "urlPathTemplate": "/resume",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"is_paused\": true,\n    \"paused_at\": \"paused_at\",\n    \"resumed_at\": \"resumed_at\",\n    \"emitted\": 1,\n    \"skipped\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "92575fbf-40fe-419b-b813-ae0d812663d6",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "1c14f0dc-5f79-47c1-9bda-1201cc7899af",
+      "name": "List Conversations - default",
+      "request": {
+        "urlPathTemplate": "/conversations",
+        "method": "GET",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": [\n    {\n      \"id\": \"id\",\n      \"external_id\": \"external_id\",\n      \"agent_id\": 1,\n      \"team_id\": 1,\n      \"tags\": {\n        \"key\": \"value\"\n      },\n      \"started_at\": \"started_at\",\n      \"ended_at\": \"ended_at\",\n      \"agent_paused\": true,\n      \"agent_paused_at\": \"agent_paused_at\",\n      \"agent_resumed_at\": \"agent_resumed_at\"\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 1\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1c14f0dc-5f79-47c1-9bda-1201cc7899af",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "e0d4b172-40b6-442b-9ac2-db8a02ab4c63",
+      "name": "Get Conversation - default",
+      "request": {
+        "urlPathTemplate": "/conversations/{id}",
+        "method": "GET",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"agent_id\": 1,\n    \"team_id\": 1,\n    \"tags\": {\n      \"key\": \"value\"\n    },\n    \"started_at\": \"started_at\",\n    \"ended_at\": \"ended_at\",\n    \"agent_paused\": true,\n    \"agent_paused_at\": \"agent_paused_at\",\n    \"agent_resumed_at\": \"agent_resumed_at\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "e0d4b172-40b6-442b-9ac2-db8a02ab4c63",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "9c6dd2a0-7162-4e6c-8e1a-08f86703c9ae",
+      "name": "Pause Conversation - default",
+      "request": {
+        "urlPathTemplate": "/conversations/{id}/pause",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"agent_id\": 1,\n    \"team_id\": 1,\n    \"tags\": {\n      \"key\": \"value\"\n    },\n    \"started_at\": \"started_at\",\n    \"ended_at\": \"ended_at\",\n    \"agent_paused\": true,\n    \"agent_paused_at\": \"agent_paused_at\",\n    \"agent_resumed_at\": \"agent_resumed_at\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "9c6dd2a0-7162-4e6c-8e1a-08f86703c9ae",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "effbc0e6-ee72-4616-bbb0-1cfad96f5687",
+      "name": "Resume Conversation - default",
+      "request": {
+        "urlPathTemplate": "/conversations/{id}/resume",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"external_id\": \"external_id\",\n    \"agent_id\": 1,\n    \"team_id\": 1,\n    \"tags\": {\n      \"key\": \"value\"\n    },\n    \"started_at\": \"started_at\",\n    \"ended_at\": \"ended_at\",\n    \"agent_paused\": true,\n    \"agent_paused_at\": \"agent_paused_at\",\n    \"agent_resumed_at\": \"agent_resumed_at\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "effbc0e6-ee72-4616-bbb0-1cfad96f5687",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "eb2c062c-2b6b-4f40-8363-245debb59684",
       "name": "Discord Channel Status - default",
       "request": {
@@ -923,8 +1125,8 @@
       }
     },
     {
-      "id": "4cfa92ef-0586-429a-9979-5bfddee2fa85",
-      "name": "LINE channel status - default",
+      "id": "b4c7a077-063a-4510-ace9-1869d1bcddef",
+      "name": "LINE Channel Status - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/line",
         "method": "GET",
@@ -941,7 +1143,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "4cfa92ef-0586-429a-9979-5bfddee2fa85",
+      "uuid": "b4c7a077-063a-4510-ace9-1869d1bcddef",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -954,8 +1156,8 @@
       }
     },
     {
-      "id": "5ef97b8e-04fd-4b57-a1ea-ef1e8f4743d2",
-      "name": "LINE Messaging API webhook - default",
+      "id": "12ae9e51-6f54-4e98-a640-d0d53272a4b5",
+      "name": "LINE Messaging API Webhook - default",
       "request": {
         "urlPathTemplate": "/channels/{id}/line",
         "method": "POST",
@@ -972,7 +1174,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "5ef97b8e-04fd-4b57-a1ea-ef1e8f4743d2",
+      "uuid": "12ae9e51-6f54-4e98-a640-d0d53272a4b5",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1148,6 +1350,76 @@
       }
     },
     {
+      "id": "cd8e250a-7805-4d8d-a62d-7649b949717d",
+      "name": "WhatsApp Webhook Verification - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/whatsapp",
+        "method": "GET",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        },
+        "queryParameters": {
+          "hub.mode": {
+            "equalTo": "subscribe"
+          },
+          "hub.verify_token": {
+            "equalTo": "hub.verify_token"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"string\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "cd8e250a-7805-4d8d-a62d-7649b949717d",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "d3f09edc-631e-486e-9987-712fc38de88c",
+      "name": "WhatsApp Message Webhook - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/whatsapp",
+        "method": "POST",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "d3f09edc-631e-486e-9987-712fc38de88c",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "605a6fd8-3b32-48df-8874-bf924e243279",
       "name": "Get Share Messages - default",
       "request": {
@@ -1180,6 +1452,6 @@
     }
   ],
   "meta": {
-    "total": 34
+    "total": 42
   }
 }
