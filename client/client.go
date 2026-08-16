@@ -6,9 +6,11 @@ import (
 	fmt "fmt"
 
 	apgsdkgo "github.com/apologist-project/apg-sdk-go"
+	agent "github.com/apologist-project/apg-sdk-go/agent"
 	benchmarks "github.com/apologist-project/apg-sdk-go/benchmarks"
 	channels "github.com/apologist-project/apg-sdk-go/channels"
 	chat "github.com/apologist-project/apg-sdk-go/chat"
+	conversations "github.com/apologist-project/apg-sdk-go/conversations"
 	core "github.com/apologist-project/apg-sdk-go/core"
 	corpus "github.com/apologist-project/apg-sdk-go/corpus"
 	ctas "github.com/apologist-project/apg-sdk-go/ctas"
@@ -20,14 +22,16 @@ import (
 )
 
 type ApologistAgentClient struct {
-	Chat       *chat.Client
-	Corpus     *corpus.Client
-	Evaluators *evaluators.Client
-	CtAs       *ctas.Client
-	Users      *users.Client
-	Benchmarks *benchmarks.Client
-	Channels   *channels.Client
-	Shares     *shares.Client
+	Chat          *chat.Client
+	Corpus        *corpus.Client
+	Evaluators    *evaluators.Client
+	CtAs          *ctas.Client
+	Users         *users.Client
+	Benchmarks    *benchmarks.Client
+	Agent         *agent.Client
+	Conversations *conversations.Client
+	Channels      *channels.Client
+	Shares        *shares.Client
 
 	options *core.RequestOptions
 	baseURL string
@@ -50,16 +54,18 @@ func NewApologistAgentClient(opts ...option.RequestOption) *ApologistAgentClient
 		}
 	}
 	return &ApologistAgentClient{
-		Chat:       chat.NewClient(options),
-		Corpus:     corpus.NewClient(options),
-		Evaluators: evaluators.NewClient(options),
-		CtAs:       ctas.NewClient(options),
-		Users:      users.NewClient(options),
-		Benchmarks: benchmarks.NewClient(options),
-		Channels:   channels.NewClient(options),
-		Shares:     shares.NewClient(options),
-		options:    options,
-		baseURL:    options.BaseURL,
+		Chat:          chat.NewClient(options),
+		Corpus:        corpus.NewClient(options),
+		Evaluators:    evaluators.NewClient(options),
+		CtAs:          ctas.NewClient(options),
+		Users:         users.NewClient(options),
+		Benchmarks:    benchmarks.NewClient(options),
+		Agent:         agent.NewClient(options),
+		Conversations: conversations.NewClient(options),
+		Channels:      channels.NewClient(options),
+		Shares:        shares.NewClient(options),
+		options:       options,
+		baseURL:       options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:         options.HTTPClient,

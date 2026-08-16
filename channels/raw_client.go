@@ -448,3 +448,103 @@ func (r *RawClient) ReceiveTwilioMessage(
 		Body:       nil,
 	}, nil
 }
+
+func (r *RawClient) VerifyWhatsAppWebhook(
+	ctx context.Context,
+	request *apgsdkgo.VerifyWhatsAppWebhookRequest,
+	opts ...option.RequestOption,
+) (*core.Response[string], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/whatsapp",
+		request.ID,
+	)
+	queryParams, err := internal.QueryValues(request)
+	if err != nil {
+		return nil, err
+	}
+	if len(queryParams) > 0 {
+		endpointURL += "?" + queryParams.Encode()
+	}
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	response := bytes.NewBuffer(nil)
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[string]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response.String(),
+	}, nil
+}
+
+func (r *RawClient) ReceiveWhatsAppMessage(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveWhatsAppMessageRequest,
+	opts ...option.RequestOption,
+) (*core.Response[any], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/whatsapp",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	if request.HubSignature256 != nil {
+		headers.Add("x-hub-signature-256", *request.HubSignature256)
+	}
+	headers.Add("Content-Type", "application/json")
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[any]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       nil,
+	}, nil
+}

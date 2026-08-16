@@ -292,3 +292,62 @@ func (c *Client) ReceiveTwilioMessage(
 	}
 	return nil
 }
+
+// Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+//
+// Example:
+//
+//	request := &apgsdkgo.VerifyWhatsAppWebhookRequest{
+//	    ID: "id",
+//	    HubMode: apgsdkgo.VerifyWhatsAppWebhookRequestHubModeSubscribe,
+//	    HubVerifyToken: "hub.verify_token",
+//	}
+//	client.Channels.VerifyWhatsAppWebhook(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) VerifyWhatsAppWebhook(
+	ctx context.Context,
+	request *apgsdkgo.VerifyWhatsAppWebhookRequest,
+	opts ...option.RequestOption,
+) (string, error) {
+	response, err := c.WithRawResponse.VerifyWhatsAppWebhook(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return "", err
+	}
+	return response.Body, nil
+}
+
+// Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+//
+// Example:
+//
+//	request := &apgsdkgo.ReceiveWhatsAppMessageRequest{
+//	    ID: "id",
+//	    Body: map[string]any{
+//	        "key": "value",
+//	    },
+//	}
+//	client.Channels.ReceiveWhatsAppMessage(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ReceiveWhatsAppMessage(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveWhatsAppMessageRequest,
+	opts ...option.RequestOption,
+) error {
+	_, err := c.WithRawResponse.ReceiveWhatsAppMessage(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}

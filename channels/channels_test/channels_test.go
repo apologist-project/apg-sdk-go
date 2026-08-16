@@ -317,3 +317,58 @@ func TestChannelsReceiveTwilioMessageWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestChannelsReceiveTwilioMessageWithWireMock", "POST", "/channels/id/twilio", nil, 1)
 }
+
+func TestChannelsVerifyWhatsAppWebhookWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.VerifyWhatsAppWebhookRequest{
+		ID:             "id",
+		HubMode:        apgsdkgo.VerifyWhatsAppWebhookRequestHubModeSubscribe,
+		HubVerifyToken: "hub.verify_token",
+	}
+	_, invocationErr := client.Channels.VerifyWhatsAppWebhook(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsVerifyWhatsAppWebhookWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsVerifyWhatsAppWebhookWithWireMock", "GET", "/channels/id/whatsapp", map[string]interface{}{"hub.mode": "subscribe", "hub.verify_token": "hub.verify_token"}, 1)
+}
+
+func TestChannelsReceiveWhatsAppMessageWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.ReceiveWhatsAppMessageRequest{
+		ID: "id",
+		Body: map[string]any{
+			"key": "value",
+		},
+	}
+	invocationErr := client.Channels.ReceiveWhatsAppMessage(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsReceiveWhatsAppMessageWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsReceiveWhatsAppMessageWithWireMock", "POST", "/channels/id/whatsapp", nil, 1)
+}

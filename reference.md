@@ -2252,6 +2252,336 @@ client.Benchmarks.GetBenchmarkRun(
 </dl>
 </details>
 
+## Agent
+<details><summary><code>client.Agent.PauseAgent() -> *apgsdkgo.PauseAgentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Pauses the agent globally and fans out pause transition messages to open conversations. Requires an API key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agent.PauseAgent(
+    context.TODO(),
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agent.ResumeAgent() -> *apgsdkgo.ResumeAgentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Resumes the agent globally and fans out resume transition messages to open conversations. Requires an API key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Agent.ResumeAgent(
+    context.TODO(),
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Conversations
+<details><summary><code>client.Conversations.ListConversations() -> *apgsdkgo.ListConversationsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a paginated list of conversations for the requesting agent, newest first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.ListConversationsRequest{}
+client.Conversations.ListConversations(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**page:** `*int` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**perPage:** `*int` — Results per page (clamped to 100).
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversations.GetConversation(ID) -> *apgsdkgo.GetConversationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a single conversation by internal UUID or team-scoped external id.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.GetConversationRequest{
+    ID: "id",
+}
+client.Conversations.GetConversation(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The conversation UUID or team-scoped external id
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversations.PauseConversation(ID) -> *apgsdkgo.PauseConversationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Pauses the agent on a conversation identified by internal UUID or team-scoped external id. Requires an API key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.PauseConversationRequest{
+    ID: "id",
+}
+client.Conversations.PauseConversation(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The conversation UUID or team-scoped external id
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversations.ResumeConversation(ID) -> *apgsdkgo.ResumeConversationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Resumes the agent on a conversation identified by internal UUID or team-scoped external id. Requires an API key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.ResumeConversationRequest{
+    ID: "id",
+}
+client.Conversations.ResumeConversation(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The conversation UUID or team-scoped external id
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Channels
 <details><summary><code>client.Channels.GetDiscordChannelStatus(ID) -> *apgsdkgo.GetDiscordChannelStatusResponse</code></summary>
 <dl>
@@ -2894,6 +3224,171 @@ client.Channels.ReceiveTwilioMessage(
 <dd>
 
 **body:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Channels.VerifyWhatsAppWebhook(ID) -> string</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.VerifyWhatsAppWebhookRequest{
+    ID: "id",
+    HubMode: apgsdkgo.VerifyWhatsAppWebhookRequestHubModeSubscribe,
+    HubVerifyToken: "hub.verify_token",
+}
+client.Channels.VerifyWhatsAppWebhook(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The channel id
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**hubMode:** `*apgsdkgo.VerifyWhatsAppWebhookRequestHubMode` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**hubVerifyToken:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**hubChallenge:** `*string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Channels.ReceiveWhatsAppMessage(ID, request) -> error</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &apgsdkgo.ReceiveWhatsAppMessageRequest{
+    ID: "id",
+    Body: map[string]any{
+        "key": "value",
+    },
+}
+client.Channels.ReceiveWhatsAppMessage(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**id:** `string` — The channel id
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**hubSignature256:** `*string` — Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured and the webhook URL does not include an api_key.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `map[string]any` — WhatsApp Cloud API webhook payload (`entry` + `changes`).
     
 </dd>
 </dl>

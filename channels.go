@@ -343,6 +343,56 @@ func (r *ReceiveTwilioMessageRequest) MarshalJSON() ([]byte, error) {
 }
 
 var (
+	receiveWhatsAppMessageRequestFieldHubSignature256 = big.NewInt(1 << 0)
+	receiveWhatsAppMessageRequestFieldID              = big.NewInt(1 << 1)
+)
+
+type ReceiveWhatsAppMessageRequest struct {
+	// Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured and the webhook URL does not include an api_key.
+	HubSignature256 *string `json:"-" url:"-"`
+	// The channel id
+	ID   string         `json:"-" url:"-"`
+	Body map[string]any `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (r *ReceiveWhatsAppMessageRequest) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetHubSignature256 sets the HubSignature256 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveWhatsAppMessageRequest) SetHubSignature256(hubSignature256 *string) {
+	r.HubSignature256 = hubSignature256
+	r.require(receiveWhatsAppMessageRequestFieldHubSignature256)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveWhatsAppMessageRequest) SetID(id string) {
+	r.ID = id
+	r.require(receiveWhatsAppMessageRequestFieldID)
+}
+
+func (r *ReceiveWhatsAppMessageRequest) UnmarshalJSON(data []byte) error {
+	var body map[string]any
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	r.Body = body
+	return nil
+}
+
+func (r *ReceiveWhatsAppMessageRequest) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.Body)
+}
+
+var (
 	getDiscordChannelStatusResponseFieldStatus  = big.NewInt(1 << 0)
 	getDiscordChannelStatusResponseFieldChannel = big.NewInt(1 << 1)
 	getDiscordChannelStatusResponseFieldActive  = big.NewInt(1 << 2)
@@ -593,6 +643,25 @@ func (v VerifyFacebookWebhookRequestHubMode) Ptr() *VerifyFacebookWebhookRequest
 	return &v
 }
 
+type VerifyWhatsAppWebhookRequestHubMode string
+
+const (
+	VerifyWhatsAppWebhookRequestHubModeSubscribe VerifyWhatsAppWebhookRequestHubMode = "subscribe"
+)
+
+func NewVerifyWhatsAppWebhookRequestHubModeFromString(s string) (VerifyWhatsAppWebhookRequestHubMode, error) {
+	switch s {
+	case "subscribe":
+		return VerifyWhatsAppWebhookRequestHubModeSubscribe, nil
+	}
+	var t VerifyWhatsAppWebhookRequestHubMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerifyWhatsAppWebhookRequestHubMode) Ptr() *VerifyWhatsAppWebhookRequestHubMode {
+	return &v
+}
+
 var (
 	verifyFacebookWebhookRequestFieldID             = big.NewInt(1 << 0)
 	verifyFacebookWebhookRequestFieldHubMode        = big.NewInt(1 << 1)
@@ -644,4 +713,57 @@ func (v *VerifyFacebookWebhookRequest) SetHubVerifyToken(hubVerifyToken string) 
 func (v *VerifyFacebookWebhookRequest) SetHubChallenge(hubChallenge *string) {
 	v.HubChallenge = hubChallenge
 	v.require(verifyFacebookWebhookRequestFieldHubChallenge)
+}
+
+var (
+	verifyWhatsAppWebhookRequestFieldID             = big.NewInt(1 << 0)
+	verifyWhatsAppWebhookRequestFieldHubMode        = big.NewInt(1 << 1)
+	verifyWhatsAppWebhookRequestFieldHubVerifyToken = big.NewInt(1 << 2)
+	verifyWhatsAppWebhookRequestFieldHubChallenge   = big.NewInt(1 << 3)
+)
+
+type VerifyWhatsAppWebhookRequest struct {
+	// The channel id
+	ID             string                              `json:"-" url:"-"`
+	HubMode        VerifyWhatsAppWebhookRequestHubMode `json:"-" url:"hub.mode"`
+	HubVerifyToken string                              `json:"-" url:"hub.verify_token"`
+	HubChallenge   *string                             `json:"-" url:"hub.challenge,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (v *VerifyWhatsAppWebhookRequest) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyWhatsAppWebhookRequest) SetID(id string) {
+	v.ID = id
+	v.require(verifyWhatsAppWebhookRequestFieldID)
+}
+
+// SetHubMode sets the HubMode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyWhatsAppWebhookRequest) SetHubMode(hubMode VerifyWhatsAppWebhookRequestHubMode) {
+	v.HubMode = hubMode
+	v.require(verifyWhatsAppWebhookRequestFieldHubMode)
+}
+
+// SetHubVerifyToken sets the HubVerifyToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyWhatsAppWebhookRequest) SetHubVerifyToken(hubVerifyToken string) {
+	v.HubVerifyToken = hubVerifyToken
+	v.require(verifyWhatsAppWebhookRequestFieldHubVerifyToken)
+}
+
+// SetHubChallenge sets the HubChallenge field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *VerifyWhatsAppWebhookRequest) SetHubChallenge(hubChallenge *string) {
+	v.HubChallenge = hubChallenge
+	v.require(verifyWhatsAppWebhookRequestFieldHubChallenge)
 }
