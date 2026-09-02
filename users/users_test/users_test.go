@@ -176,3 +176,55 @@ func TestUsersUpdateUserWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestUsersUpdateUserWithWireMock", "PATCH", "/users/user_id", nil, 1)
 }
+
+func TestUsersScrubUserWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &apgsdkgo.ScrubUserRequest{
+		UserID: "user_id",
+	}
+	_, invocationErr := client.Users.ScrubUser(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestUsersScrubUserWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestUsersScrubUserWithWireMock", "POST", "/users/user_id/scrub", nil, 1)
+}
+
+func TestUsersAnonymizeUserWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &apgsdkgo.AnonymizeUserRequest{
+		UserID: "user_id",
+	}
+	_, invocationErr := client.Users.AnonymizeUser(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestUsersAnonymizeUserWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestUsersAnonymizeUserWithWireMock", "POST", "/users/user_id/anonymize", nil, 1)
+}

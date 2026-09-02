@@ -136,8 +136,8 @@
       }
     },
     {
-      "id": "694a164b-8257-4dd3-a516-6b1fa88dec21",
-      "name": "Submit Feedback for Chat Completion - default",
+      "id": "12b30e0d-07e3-4cce-b086-4843c6ffbf45",
+      "name": "Submit Feedback For Chat Completion - default",
       "request": {
         "urlPathTemplate": "/chat/completions/{id}/feedback",
         "method": "POST",
@@ -159,7 +159,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "694a164b-8257-4dd3-a516-6b1fa88dec21",
+      "uuid": "12b30e0d-07e3-4cce-b086-4843c6ffbf45",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -547,8 +547,8 @@
       }
     },
     {
-      "id": "91799810-eb50-48e5-91c2-6c7539d64820",
-      "name": "Match Calls to Action - default",
+      "id": "4eb53445-974a-4b3b-82a2-44749b5d0a2c",
+      "name": "Match Calls To Action - default",
       "request": {
         "urlPathTemplate": "/ctas/match",
         "method": "POST",
@@ -565,7 +565,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "91799810-eb50-48e5-91c2-6c7539d64820",
+      "uuid": "4eb53445-974a-4b3b-82a2-44749b5d0a2c",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -738,6 +738,78 @@
         }
       },
       "uuid": "b9108372-55c5-4237-a169-bcbe6f8354b9",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "301bc787-4f0d-409a-b08b-0be5754f4bf2",
+      "name": "Scrub User - default",
+      "request": {
+        "urlPathTemplate": "/users/{user_id}/scrub",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "user_id": {
+            "equalTo": "user_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"mode\": \"scrub\",\n    \"redact_requested_at\": \"redact_requested_at\",\n    \"messages_redacted\": 1,\n    \"remaining\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "301bc787-4f0d-409a-b08b-0be5754f4bf2",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "1a1c46d6-08ac-40be-9f28-3458f0843741",
+      "name": "Anonymize User - default",
+      "request": {
+        "urlPathTemplate": "/users/{user_id}/anonymize",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "user_id": {
+            "equalTo": "user_id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"mode\": \"scrub\",\n    \"redact_requested_at\": \"redact_requested_at\",\n    \"messages_redacted\": 1,\n    \"remaining\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1a1c46d6-08ac-40be-9f28-3458f0843741",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1051,6 +1123,68 @@
         }
       },
       "uuid": "effbc0e6-ee72-4616-bbb0-1cfad96f5687",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "75ec48c4-2871-49d2-acbe-e602a1ef8236",
+      "name": "Chatwoot Channel Status - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/chatwoot",
+        "method": "GET",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"status\": \"status\",\n  \"channel\": \"channel\",\n  \"active\": true\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "75ec48c4-2871-49d2-acbe-e602a1ef8236",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "a09745e7-9225-4e3f-96b7-de5066bf9713",
+      "name": "Chatwoot Agent Bot Webhook - default",
+      "request": {
+        "urlPathTemplate": "/channels/{id}/chatwoot",
+        "method": "POST",
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "\"\"",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "a09745e7-9225-4e3f-96b7-de5066bf9713",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1452,6 +1586,6 @@
     }
   ],
   "meta": {
-    "total": 42
+    "total": 46
   }
 }
