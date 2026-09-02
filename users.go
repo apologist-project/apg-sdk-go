@@ -10,6 +10,32 @@ import (
 )
 
 var (
+	anonymizeUserRequestFieldUserID = big.NewInt(1 << 0)
+)
+
+type AnonymizeUserRequest struct {
+	// The user's external id or internal id
+	UserID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *AnonymizeUserRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetUserID sets the UserID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AnonymizeUserRequest) SetUserID(userID string) {
+	a.UserID = userID
+	a.require(anonymizeUserRequestFieldUserID)
+}
+
+var (
 	getUserRequestFieldUserID = big.NewInt(1 << 0)
 )
 
@@ -149,6 +175,32 @@ func (l *ListUsersRequest) SetMinTimestamp(minTimestamp *string) {
 func (l *ListUsersRequest) SetMaxTimestamp(maxTimestamp *string) {
 	l.MaxTimestamp = maxTimestamp
 	l.require(listUsersRequestFieldMaxTimestamp)
+}
+
+var (
+	scrubUserRequestFieldUserID = big.NewInt(1 << 0)
+)
+
+type ScrubUserRequest struct {
+	// The user's external id or internal id
+	UserID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *ScrubUserRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetUserID sets the UserID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ScrubUserRequest) SetUserID(userID string) {
+	s.UserID = userID
+	s.require(scrubUserRequestFieldUserID)
 }
 
 var (
@@ -615,6 +667,265 @@ func (u *UserFlag) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+// Result of scrubbing or anonymizing a user's message-adjacent text. Rows and identifiers are kept.
+var (
+	userRedactResponseFieldID                = big.NewInt(1 << 0)
+	userRedactResponseFieldMode              = big.NewInt(1 << 1)
+	userRedactResponseFieldRedactRequestedAt = big.NewInt(1 << 2)
+	userRedactResponseFieldMessagesRedacted  = big.NewInt(1 << 3)
+	userRedactResponseFieldRemaining         = big.NewInt(1 << 4)
+)
+
+type UserRedactResponse struct {
+	// Internal user id (UUID).
+	ID   *string                 `json:"id,omitempty" url:"id,omitempty"`
+	Mode *UserRedactResponseMode `json:"mode,omitempty" url:"mode,omitempty"`
+	// When the erase request was stamped. The hourly cron finishes leftover rows.
+	RedactRequestedAt *string `json:"redact_requested_at,omitempty" url:"redact_requested_at,omitempty"`
+	// Message rows rewritten in this request.
+	MessagesRedacted *int `json:"messages_redacted,omitempty" url:"messages_redacted,omitempty"`
+	// Message rows still waiting. Zero means this request finished the user.
+	Remaining *int `json:"remaining,omitempty" url:"remaining,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UserRedactResponse) GetID() *string {
+	if u == nil {
+		return nil
+	}
+	return u.ID
+}
+
+func (u *UserRedactResponse) GetMode() *UserRedactResponseMode {
+	if u == nil {
+		return nil
+	}
+	return u.Mode
+}
+
+func (u *UserRedactResponse) GetRedactRequestedAt() *string {
+	if u == nil {
+		return nil
+	}
+	return u.RedactRequestedAt
+}
+
+func (u *UserRedactResponse) GetMessagesRedacted() *int {
+	if u == nil {
+		return nil
+	}
+	return u.MessagesRedacted
+}
+
+func (u *UserRedactResponse) GetRemaining() *int {
+	if u == nil {
+		return nil
+	}
+	return u.Remaining
+}
+
+func (u *UserRedactResponse) GetExtraProperties() map[string]interface{} {
+	if u == nil {
+		return nil
+	}
+	return u.extraProperties
+}
+
+func (u *UserRedactResponse) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserRedactResponse) SetID(id *string) {
+	u.ID = id
+	u.require(userRedactResponseFieldID)
+}
+
+// SetMode sets the Mode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserRedactResponse) SetMode(mode *UserRedactResponseMode) {
+	u.Mode = mode
+	u.require(userRedactResponseFieldMode)
+}
+
+// SetRedactRequestedAt sets the RedactRequestedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserRedactResponse) SetRedactRequestedAt(redactRequestedAt *string) {
+	u.RedactRequestedAt = redactRequestedAt
+	u.require(userRedactResponseFieldRedactRequestedAt)
+}
+
+// SetMessagesRedacted sets the MessagesRedacted field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserRedactResponse) SetMessagesRedacted(messagesRedacted *int) {
+	u.MessagesRedacted = messagesRedacted
+	u.require(userRedactResponseFieldMessagesRedacted)
+}
+
+// SetRemaining sets the Remaining field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserRedactResponse) SetRemaining(remaining *int) {
+	u.Remaining = remaining
+	u.require(userRedactResponseFieldRemaining)
+}
+
+func (u *UserRedactResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler UserRedactResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UserRedactResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UserRedactResponse) MarshalJSON() ([]byte, error) {
+	type embed UserRedactResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (u *UserRedactResponse) String() string {
+	if u == nil {
+		return "<nil>"
+	}
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+type UserRedactResponseMode string
+
+const (
+	UserRedactResponseModeScrub     UserRedactResponseMode = "scrub"
+	UserRedactResponseModeAnonymize UserRedactResponseMode = "anonymize"
+)
+
+func NewUserRedactResponseModeFromString(s string) (UserRedactResponseMode, error) {
+	switch s {
+	case "scrub":
+		return UserRedactResponseModeScrub, nil
+	case "anonymize":
+		return UserRedactResponseModeAnonymize, nil
+	}
+	var t UserRedactResponseMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UserRedactResponseMode) Ptr() *UserRedactResponseMode {
+	return &u
+}
+
+var (
+	anonymizeUserResponseFieldData = big.NewInt(1 << 0)
+)
+
+type AnonymizeUserResponse struct {
+	Data *UserRedactResponse `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AnonymizeUserResponse) GetData() *UserRedactResponse {
+	if a == nil {
+		return nil
+	}
+	return a.Data
+}
+
+func (a *AnonymizeUserResponse) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AnonymizeUserResponse) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AnonymizeUserResponse) SetData(data *UserRedactResponse) {
+	a.Data = data
+	a.require(anonymizeUserResponseFieldData)
+}
+
+func (a *AnonymizeUserResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AnonymizeUserResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AnonymizeUserResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AnonymizeUserResponse) MarshalJSON() ([]byte, error) {
+	type embed AnonymizeUserResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AnonymizeUserResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
 var (
 	getUserResponseFieldData = big.NewInt(1 << 0)
 )
@@ -961,6 +1272,90 @@ func (l *ListUsersResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
+}
+
+var (
+	scrubUserResponseFieldData = big.NewInt(1 << 0)
+)
+
+type ScrubUserResponse struct {
+	Data *UserRedactResponse `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *ScrubUserResponse) GetData() *UserRedactResponse {
+	if s == nil {
+		return nil
+	}
+	return s.Data
+}
+
+func (s *ScrubUserResponse) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *ScrubUserResponse) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ScrubUserResponse) SetData(data *UserRedactResponse) {
+	s.Data = data
+	s.require(scrubUserResponseFieldData)
+}
+
+func (s *ScrubUserResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ScrubUserResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ScrubUserResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ScrubUserResponse) MarshalJSON() ([]byte, error) {
+	type embed ScrubUserResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *ScrubUserResponse) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 var (

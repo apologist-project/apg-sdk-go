@@ -221,3 +221,93 @@ func (r *RawClient) UpdateUser(
 		Body:       response,
 	}, nil
 }
+
+func (r *RawClient) ScrubUser(
+	ctx context.Context,
+	request *apgsdkgo.ScrubUserRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.ScrubUserResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/users/%v/scrub",
+		request.UserID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.ScrubUserResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.ScrubUserResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) AnonymizeUser(
+	ctx context.Context,
+	request *apgsdkgo.AnonymizeUserRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.AnonymizeUserResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/users/%v/anonymize",
+		request.UserID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.AnonymizeUserResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.AnonymizeUserResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}

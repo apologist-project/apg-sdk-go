@@ -33,6 +33,102 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 	}
 }
 
+func (r *RawClient) GetChatwootChannelStatus(
+	ctx context.Context,
+	request *apgsdkgo.GetChatwootChannelStatusRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.GetChatwootChannelStatusResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/chatwoot",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.GetChatwootChannelStatusResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.GetChatwootChannelStatusResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) ReceiveChatwootWebhook(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveChatwootWebhookRequest,
+	opts ...option.RequestOption,
+) (*core.Response[any], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/channels/%v/chatwoot",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	if request.ChatwootSignature != nil {
+		headers.Add("X-Chatwoot-Signature", *request.ChatwootSignature)
+	}
+	if request.ChatwootTimestamp != nil {
+		headers.Add("X-Chatwoot-Timestamp", *request.ChatwootTimestamp)
+	}
+	headers.Add("Content-Type", "application/json")
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[any]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       nil,
+	}, nil
+}
+
 func (r *RawClient) GetDiscordChannelStatus(
 	ctx context.Context,
 	request *apgsdkgo.GetDiscordChannelStatusRequest,

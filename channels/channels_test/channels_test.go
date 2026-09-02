@@ -77,6 +77,59 @@ func VerifyRequestCount(
 	require.Equal(t, expected, len(result.Requests))
 }
 
+func TestChannelsGetChatwootChannelStatusWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.GetChatwootChannelStatusRequest{
+		ID: "id",
+	}
+	_, invocationErr := client.Channels.GetChatwootChannelStatus(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsGetChatwootChannelStatusWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsGetChatwootChannelStatusWithWireMock", "GET", "/channels/id/chatwoot", nil, 1)
+}
+
+func TestChannelsReceiveChatwootWebhookWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &apgsdkgo.ReceiveChatwootWebhookRequest{
+		ID: "id",
+		Body: map[string]any{
+			"key": "value",
+		},
+	}
+	invocationErr := client.Channels.ReceiveChatwootWebhook(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChannelsReceiveChatwootWebhookWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChannelsReceiveChatwootWebhookWithWireMock", "POST", "/channels/id/chatwoot", nil, 1)
+}
+
 func TestChannelsGetDiscordChannelStatusWithWireMock(
 	t *testing.T,
 ) {

@@ -10,6 +10,32 @@ import (
 )
 
 var (
+	getChatwootChannelStatusRequestFieldID = big.NewInt(1 << 0)
+)
+
+type GetChatwootChannelStatusRequest struct {
+	// The channel id
+	ID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetChatwootChannelStatusRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetChatwootChannelStatusRequest) SetID(id string) {
+	g.ID = id
+	g.require(getChatwootChannelStatusRequestFieldID)
+}
+
+var (
 	getDiscordChannelStatusRequestFieldID = big.NewInt(1 << 0)
 )
 
@@ -85,6 +111,66 @@ func (g *GetLineChannelStatusRequest) require(field *big.Int) {
 func (g *GetLineChannelStatusRequest) SetID(id string) {
 	g.ID = id
 	g.require(getLineChannelStatusRequestFieldID)
+}
+
+var (
+	receiveChatwootWebhookRequestFieldChatwootSignature = big.NewInt(1 << 0)
+	receiveChatwootWebhookRequestFieldChatwootTimestamp = big.NewInt(1 << 1)
+	receiveChatwootWebhookRequestFieldID                = big.NewInt(1 << 2)
+)
+
+type ReceiveChatwootWebhookRequest struct {
+	// `sha256=` plus hex HMAC-SHA256 of `{timestamp}.{rawBody}` keyed with the Agent Bot webhook secret. Required when the webhook URL does not include an api_key, and whenever a webhook secret is configured.
+	ChatwootSignature *string `json:"-" url:"-"`
+	// Unix timestamp used in the HMAC payload.
+	ChatwootTimestamp *string `json:"-" url:"-"`
+	// The channel id
+	ID   string         `json:"-" url:"-"`
+	Body map[string]any `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (r *ReceiveChatwootWebhookRequest) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetChatwootSignature sets the ChatwootSignature field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveChatwootWebhookRequest) SetChatwootSignature(chatwootSignature *string) {
+	r.ChatwootSignature = chatwootSignature
+	r.require(receiveChatwootWebhookRequestFieldChatwootSignature)
+}
+
+// SetChatwootTimestamp sets the ChatwootTimestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveChatwootWebhookRequest) SetChatwootTimestamp(chatwootTimestamp *string) {
+	r.ChatwootTimestamp = chatwootTimestamp
+	r.require(receiveChatwootWebhookRequestFieldChatwootTimestamp)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *ReceiveChatwootWebhookRequest) SetID(id string) {
+	r.ID = id
+	r.require(receiveChatwootWebhookRequestFieldID)
+}
+
+func (r *ReceiveChatwootWebhookRequest) UnmarshalJSON(data []byte) error {
+	var body map[string]any
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	r.Body = body
+	return nil
+}
+
+func (r *ReceiveChatwootWebhookRequest) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.Body)
 }
 
 var (
@@ -390,6 +476,122 @@ func (r *ReceiveWhatsAppMessageRequest) UnmarshalJSON(data []byte) error {
 
 func (r *ReceiveWhatsAppMessageRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.Body)
+}
+
+var (
+	getChatwootChannelStatusResponseFieldStatus  = big.NewInt(1 << 0)
+	getChatwootChannelStatusResponseFieldChannel = big.NewInt(1 << 1)
+	getChatwootChannelStatusResponseFieldActive  = big.NewInt(1 << 2)
+)
+
+type GetChatwootChannelStatusResponse struct {
+	Status  *string `json:"status,omitempty" url:"status,omitempty"`
+	Channel *string `json:"channel,omitempty" url:"channel,omitempty"`
+	Active  *bool   `json:"active,omitempty" url:"active,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GetChatwootChannelStatusResponse) GetStatus() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Status
+}
+
+func (g *GetChatwootChannelStatusResponse) GetChannel() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Channel
+}
+
+func (g *GetChatwootChannelStatusResponse) GetActive() *bool {
+	if g == nil {
+		return nil
+	}
+	return g.Active
+}
+
+func (g *GetChatwootChannelStatusResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GetChatwootChannelStatusResponse) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetChatwootChannelStatusResponse) SetStatus(status *string) {
+	g.Status = status
+	g.require(getChatwootChannelStatusResponseFieldStatus)
+}
+
+// SetChannel sets the Channel field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetChatwootChannelStatusResponse) SetChannel(channel *string) {
+	g.Channel = channel
+	g.require(getChatwootChannelStatusResponseFieldChannel)
+}
+
+// SetActive sets the Active field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetChatwootChannelStatusResponse) SetActive(active *bool) {
+	g.Active = active
+	g.require(getChatwootChannelStatusResponseFieldActive)
+}
+
+func (g *GetChatwootChannelStatusResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler GetChatwootChannelStatusResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GetChatwootChannelStatusResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GetChatwootChannelStatusResponse) MarshalJSON() ([]byte, error) {
+	type embed GetChatwootChannelStatusResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GetChatwootChannelStatusResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
 }
 
 var (

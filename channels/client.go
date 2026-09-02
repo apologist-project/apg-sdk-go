@@ -34,6 +34,63 @@ func NewClient(options *core.RequestOptions) *Client {
 	}
 }
 
+// Returns the status of the Chatwoot channel. Used as a lightweight health/verification endpoint.
+//
+// Example:
+//
+//	request := &apgsdkgo.GetChatwootChannelStatusRequest{
+//	    ID: "id",
+//	}
+//	client.Channels.GetChatwootChannelStatus(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) GetChatwootChannelStatus(
+	ctx context.Context,
+	request *apgsdkgo.GetChatwootChannelStatusRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.GetChatwootChannelStatusResponse, error) {
+	response, err := c.WithRawResponse.GetChatwootChannelStatus(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Receives Chatwoot Agent Bot webhook events for the channel. Chatwoot owns the messaging inbox (Facebook, website widget, and others). This Agent replies through the Chatwoot API and maps native bot handoff to conversation pause/resume. Requests are verified via the `X-Chatwoot-Signature` HMAC-SHA256 header using the configured webhook secret unless an `api_key` is present and no secret is set. The route acknowledges immediately (Chatwoot times out in about 5 seconds) and processes events asynchronously.
+//
+// Example:
+//
+//	request := &apgsdkgo.ReceiveChatwootWebhookRequest{
+//	    ID: "id",
+//	    Body: map[string]any{
+//	        "key": "value",
+//	    },
+//	}
+//	client.Channels.ReceiveChatwootWebhook(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ReceiveChatwootWebhook(
+	ctx context.Context,
+	request *apgsdkgo.ReceiveChatwootWebhookRequest,
+	opts ...option.RequestOption,
+) error {
+	_, err := c.WithRawResponse.ReceiveChatwootWebhook(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Returns the status of the Discord channel. Used as a lightweight health/verification endpoint.
 //
 // Example:

@@ -137,3 +137,57 @@ func (c *Client) UpdateUser(
 	}
 	return response.Body, nil
 }
+
+// Replaces this user's message-adjacent text with a placeholder. Conversation rows, identifiers, flags, and analytics identity stay in place. Repeat calls finish leftover rows.
+//
+// Example:
+//
+//	request := &apgsdkgo.ScrubUserRequest{
+//	    UserID: "user_id",
+//	}
+//	client.Users.ScrubUser(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ScrubUser(
+	ctx context.Context,
+	request *apgsdkgo.ScrubUserRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.ScrubUserResponse, error) {
+	response, err := c.WithRawResponse.ScrubUser(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Redacts detected personal data in this user's message-adjacent text with regex, then an optional hosted redaction service when the Agent has that option on. Conversation rows, identifiers, flags, and analytics identity stay in place. Repeat calls finish leftover rows and skip text that is already redacted.
+//
+// Example:
+//
+//	request := &apgsdkgo.AnonymizeUserRequest{
+//	    UserID: "user_id",
+//	}
+//	client.Users.AnonymizeUser(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) AnonymizeUser(
+	ctx context.Context,
+	request *apgsdkgo.AnonymizeUserRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.AnonymizeUserResponse, error) {
+	response, err := c.WithRawResponse.AnonymizeUser(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
