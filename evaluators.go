@@ -25,16 +25,17 @@ var (
 
 type EvaluatorRequest struct {
 	// The ID or key of the evaluator
-	ID                  string                           `json:"-" url:"-"`
-	FrequencyPenalty    *float64                         `json:"frequency_penalty,omitempty" url:"-"`
-	ConfidenceThreshold *float64                         `json:"confidence_threshold,omitempty" url:"-"`
-	Content             *EvaluatorRequestContent         `json:"content" url:"-"`
-	Model               *string                          `json:"model,omitempty" url:"-"`
-	PresencePenalty     *float64                         `json:"presence_penalty,omitempty" url:"-"`
-	ReasoningEffort     *EvaluatorRequestReasoningEffort `json:"reasoning_effort,omitempty" url:"-"`
-	Verbosity           *EvaluatorRequestVerbosity       `json:"verbosity,omitempty" url:"-"`
-	Temperature         *float64                         `json:"temperature,omitempty" url:"-"`
-	TopP                *float64                         `json:"top_p,omitempty" url:"-"`
+	ID                  string   `json:"-" url:"-"`
+	FrequencyPenalty    *float64 `json:"frequency_penalty,omitempty" url:"-"`
+	ConfidenceThreshold *float64 `json:"confidence_threshold,omitempty" url:"-"`
+	// Text to evaluate, an array of strings, or chat messages.
+	Content         *EvaluatorRequestContent         `json:"content" url:"-"`
+	Model           *string                          `json:"model,omitempty" url:"-"`
+	PresencePenalty *float64                         `json:"presence_penalty,omitempty" url:"-"`
+	ReasoningEffort *EvaluatorRequestReasoningEffort `json:"reasoning_effort,omitempty" url:"-"`
+	Verbosity       *EvaluatorRequestVerbosity       `json:"verbosity,omitempty" url:"-"`
+	Temperature     *float64                         `json:"temperature,omitempty" url:"-"`
+	TopP            *float64                         `json:"top_p,omitempty" url:"-"`
 	// Flat string key/value pairs substituted into `{key}` placeholders in the evaluator prompt. Reserved keys (`options`, `option_descriptions`, `criteria`) cannot be overridden. Not persisted; omitted from the response.
 	Variables map[string]*string `json:"variables,omitempty" url:"-"`
 
@@ -402,9 +403,10 @@ func (e *EvaluateContentResponse) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+// Text to evaluate, an array of strings, or chat messages.
 type EvaluatorRequestContent struct {
-	String      string
-	UnknownList []any
+	String                             string
+	EvaluatorRequestContentOneItemList []*EvaluatorRequestContentOneItem
 
 	typ string
 }
@@ -416,11 +418,11 @@ func (e *EvaluatorRequestContent) GetString() string {
 	return e.String
 }
 
-func (e *EvaluatorRequestContent) GetUnknownList() []any {
+func (e *EvaluatorRequestContent) GetEvaluatorRequestContentOneItemList() []*EvaluatorRequestContentOneItem {
 	if e == nil {
 		return nil
 	}
-	return e.UnknownList
+	return e.EvaluatorRequestContentOneItemList
 }
 
 func (e *EvaluatorRequestContent) UnmarshalJSON(data []byte) error {
@@ -430,10 +432,10 @@ func (e *EvaluatorRequestContent) UnmarshalJSON(data []byte) error {
 		e.String = valueString
 		return nil
 	}
-	var valueUnknownList []any
-	if err := json.Unmarshal(data, &valueUnknownList); err == nil {
-		e.typ = "UnknownList"
-		e.UnknownList = valueUnknownList
+	var valueEvaluatorRequestContentOneItemList []*EvaluatorRequestContentOneItem
+	if err := json.Unmarshal(data, &valueEvaluatorRequestContentOneItemList); err == nil {
+		e.typ = "EvaluatorRequestContentOneItemList"
+		e.EvaluatorRequestContentOneItemList = valueEvaluatorRequestContentOneItemList
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
@@ -443,23 +445,85 @@ func (e EvaluatorRequestContent) MarshalJSON() ([]byte, error) {
 	if e.typ == "String" || e.String != "" {
 		return json.Marshal(e.String)
 	}
-	if e.typ == "UnknownList" || e.UnknownList != nil {
-		return json.Marshal(e.UnknownList)
+	if e.typ == "EvaluatorRequestContentOneItemList" || e.EvaluatorRequestContentOneItemList != nil {
+		return json.Marshal(e.EvaluatorRequestContentOneItemList)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EvaluatorRequestContentVisitor interface {
 	VisitString(string) error
-	VisitUnknownList([]any) error
+	VisitEvaluatorRequestContentOneItemList([]*EvaluatorRequestContentOneItem) error
 }
 
 func (e *EvaluatorRequestContent) Accept(visitor EvaluatorRequestContentVisitor) error {
 	if e.typ == "String" || e.String != "" {
 		return visitor.VisitString(e.String)
 	}
-	if e.typ == "UnknownList" || e.UnknownList != nil {
-		return visitor.VisitUnknownList(e.UnknownList)
+	if e.typ == "EvaluatorRequestContentOneItemList" || e.EvaluatorRequestContentOneItemList != nil {
+		return visitor.VisitEvaluatorRequestContentOneItemList(e.EvaluatorRequestContentOneItemList)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
+}
+
+type EvaluatorRequestContentOneItem struct {
+	String      string
+	ChatMessage *ChatMessage
+
+	typ string
+}
+
+func (e *EvaluatorRequestContentOneItem) GetString() string {
+	if e == nil {
+		return ""
+	}
+	return e.String
+}
+
+func (e *EvaluatorRequestContentOneItem) GetChatMessage() *ChatMessage {
+	if e == nil {
+		return nil
+	}
+	return e.ChatMessage
+}
+
+func (e *EvaluatorRequestContentOneItem) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typ = "String"
+		e.String = valueString
+		return nil
+	}
+	valueChatMessage := new(ChatMessage)
+	if err := json.Unmarshal(data, &valueChatMessage); err == nil {
+		e.typ = "ChatMessage"
+		e.ChatMessage = valueChatMessage
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EvaluatorRequestContentOneItem) MarshalJSON() ([]byte, error) {
+	if e.typ == "String" || e.String != "" {
+		return json.Marshal(e.String)
+	}
+	if e.typ == "ChatMessage" || e.ChatMessage != nil {
+		return json.Marshal(e.ChatMessage)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
+}
+
+type EvaluatorRequestContentOneItemVisitor interface {
+	VisitString(string) error
+	VisitChatMessage(*ChatMessage) error
+}
+
+func (e *EvaluatorRequestContentOneItem) Accept(visitor EvaluatorRequestContentOneItemVisitor) error {
+	if e.typ == "String" || e.String != "" {
+		return visitor.VisitString(e.String)
+	}
+	if e.typ == "ChatMessage" || e.ChatMessage != nil {
+		return visitor.VisitChatMessage(e.ChatMessage)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }

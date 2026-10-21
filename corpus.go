@@ -17,7 +17,7 @@ var (
 )
 
 type ImpressionRequest struct {
-	// The model type (e.g., 'source')
+	// Listing model. One of collection, contributor, organization, or source.
 	Model string `json:"-" url:"-"`
 	// The ID of the corpus item
 	ID       string  `json:"-" url:"-"`
@@ -92,7 +92,7 @@ var (
 )
 
 type ReferralRequest struct {
-	// The model type (e.g., 'source')
+	// Listing model. One of collection, contributor, organization, or source.
 	Model string `json:"-" url:"-"`
 	// The ID of the corpus item
 	ID       string  `json:"-" url:"-"`
@@ -168,7 +168,7 @@ var (
 )
 
 type LogCorpusReferralRedirectRequest struct {
-	// The model type (e.g., 'source')
+	// Listing model. One of collection, contributor, organization, or source.
 	Model string `json:"-" url:"-"`
 	// The numeric ID of the corpus item
 	ID       string  `json:"-" url:"-"`
@@ -231,7 +231,7 @@ var (
 )
 
 type ViewRequest struct {
-	// The model type (e.g., 'source')
+	// Listing model. One of collection, contributor, organization, or source.
 	Model string `json:"-" url:"-"`
 	// The ID of the corpus item
 	ID       string  `json:"-" url:"-"`

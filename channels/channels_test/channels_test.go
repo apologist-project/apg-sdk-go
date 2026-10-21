@@ -112,10 +112,70 @@ func TestChannelsReceiveChatwootWebhookWithWireMock(
 	client := client.NewApologistAgentClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
-	request := &apgsdkgo.ReceiveChatwootWebhookRequest{
-		ID: "id",
-		Body: map[string]any{
-			"key": "value",
+	request := &apgsdkgo.ChatwootWebhookPayload{
+		ChannelID: "91",
+		ChatwootSignature: apgsdkgo.String(
+			"sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+		),
+		ChatwootTimestamp: apgsdkgo.String(
+			"1710000000",
+		),
+		Event: apgsdkgo.String(
+			"message_created",
+		),
+		ID: apgsdkgo.Int(
+			9001,
+		),
+		Content: apgsdkgo.String(
+			"Hello from Messenger",
+		),
+		MessageType: apgsdkgo.String(
+			"incoming",
+		),
+		Private: apgsdkgo.Bool(
+			false,
+		),
+		Account: &apgsdkgo.ChatwootWebhookPayloadAccount{
+			ID: apgsdkgo.Int(
+				7,
+			),
+		},
+		Sender: &apgsdkgo.ChatwootWebhookPayloadSender{
+			ID: apgsdkgo.Int(
+				55,
+			),
+			Name: apgsdkgo.String(
+				"Pat",
+			),
+			Type: apgsdkgo.String(
+				"contact",
+			),
+		},
+		Conversation: &apgsdkgo.ChatwootWebhookPayloadConversation{
+			ID: apgsdkgo.Int(
+				42,
+			),
+			Status: apgsdkgo.String(
+				"pending",
+			),
+			Account: &apgsdkgo.ChatwootWebhookPayloadConversationAccount{
+				ID: apgsdkgo.Int(
+					7,
+				),
+			},
+			Meta: &apgsdkgo.ChatwootConversationMeta{
+				AssigneeType: apgsdkgo.String(
+					"AgentBot",
+				),
+				Sender: &apgsdkgo.ChatwootConversationMetaSender{
+					ID: apgsdkgo.Int(
+						55,
+					),
+					Name: apgsdkgo.String(
+						"Pat",
+					),
+				},
+			},
 		},
 	}
 	invocationErr := client.Channels.ReceiveChatwootWebhook(
@@ -127,7 +187,7 @@ func TestChannelsReceiveChatwootWebhookWithWireMock(
 	)
 
 	require.NoError(t, invocationErr, "Client method call should succeed")
-	VerifyRequestCount(t, "TestChannelsReceiveChatwootWebhookWithWireMock", "POST", "/channels/id/chatwoot", nil, 1)
+	VerifyRequestCount(t, "TestChannelsReceiveChatwootWebhookWithWireMock", "POST", "/channels/91/chatwoot", nil, 1)
 }
 
 func TestChannelsGetDiscordChannelStatusWithWireMock(

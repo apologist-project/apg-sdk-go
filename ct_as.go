@@ -65,45 +65,125 @@ func (c *CtaClickRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
-type CtaMatchRequest struct {
-	Unknown any
+var (
+	ctaMatchRequestFieldConversation = big.NewInt(1 << 0)
+	ctaMatchRequestFieldClient       = big.NewInt(1 << 1)
+	ctaMatchRequestFieldDevice       = big.NewInt(1 << 2)
+	ctaMatchRequestFieldLanguage     = big.NewInt(1 << 3)
+	ctaMatchRequestFieldLimit        = big.NewInt(1 << 4)
+	ctaMatchRequestFieldMessages     = big.NewInt(1 << 5)
+	ctaMatchRequestFieldSession      = big.NewInt(1 << 6)
+	ctaMatchRequestFieldUser         = big.NewInt(1 << 7)
+	ctaMatchRequestFieldVariables    = big.NewInt(1 << 8)
+)
 
-	typ string
+type CtaMatchRequest struct {
+	Conversation *string `json:"conversation,omitempty" url:"-"`
+	Client       *string `json:"client,omitempty" url:"-"`
+	Device       *string `json:"device,omitempty" url:"-"`
+	// ISO language code, or `auto` to detect from the prompt.
+	Language *string `json:"language,omitempty" url:"-"`
+	Limit    *int    `json:"limit,omitempty" url:"-"`
+	// Chat messages in OpenAI format.
+	Messages []*ChatMessage `json:"messages,omitempty" url:"-"`
+	Session  *string        `json:"session,omitempty" url:"-"`
+	User     *string        `json:"user,omitempty" url:"-"`
+	// Flat string key/value pairs substituted into `{key}` placeholders in evaluator prompts run during CTA matching. Not persisted.
+	Variables map[string]*string `json:"variables,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
 
-func (c *CtaMatchRequest) GetUnknown() any {
-	if c == nil {
-		return nil
+func (c *CtaMatchRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
 	}
-	return c.Unknown
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetConversation sets the Conversation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetConversation(conversation *string) {
+	c.Conversation = conversation
+	c.require(ctaMatchRequestFieldConversation)
+}
+
+// SetClient sets the Client field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetClient(client *string) {
+	c.Client = client
+	c.require(ctaMatchRequestFieldClient)
+}
+
+// SetDevice sets the Device field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetDevice(device *string) {
+	c.Device = device
+	c.require(ctaMatchRequestFieldDevice)
+}
+
+// SetLanguage sets the Language field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetLanguage(language *string) {
+	c.Language = language
+	c.require(ctaMatchRequestFieldLanguage)
+}
+
+// SetLimit sets the Limit field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetLimit(limit *int) {
+	c.Limit = limit
+	c.require(ctaMatchRequestFieldLimit)
+}
+
+// SetMessages sets the Messages field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetMessages(messages []*ChatMessage) {
+	c.Messages = messages
+	c.require(ctaMatchRequestFieldMessages)
+}
+
+// SetSession sets the Session field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetSession(session *string) {
+	c.Session = session
+	c.require(ctaMatchRequestFieldSession)
+}
+
+// SetUser sets the User field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetUser(user *string) {
+	c.User = user
+	c.require(ctaMatchRequestFieldUser)
+}
+
+// SetVariables sets the Variables field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CtaMatchRequest) SetVariables(variables map[string]*string) {
+	c.Variables = variables
+	c.require(ctaMatchRequestFieldVariables)
 }
 
 func (c *CtaMatchRequest) UnmarshalJSON(data []byte) error {
-	var valueUnknown any
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typ = "Unknown"
-		c.Unknown = valueUnknown
-		return nil
+	type unmarshaler CtaMatchRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+	*c = CtaMatchRequest(body)
+	return nil
 }
 
-func (c CtaMatchRequest) MarshalJSON() ([]byte, error) {
-	if c.typ == "Unknown" || c.Unknown != nil {
-		return json.Marshal(c.Unknown)
+func (c *CtaMatchRequest) MarshalJSON() ([]byte, error) {
+	type embed CtaMatchRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
-}
-
-type CtaMatchRequestVisitor interface {
-	VisitUnknown(any) error
-}
-
-func (c *CtaMatchRequest) Accept(visitor CtaMatchRequestVisitor) error {
-	if c.typ == "Unknown" || c.Unknown != nil {
-		return visitor.VisitUnknown(c.Unknown)
-	}
-	return fmt.Errorf("type %T does not include a non-empty union type", c)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (

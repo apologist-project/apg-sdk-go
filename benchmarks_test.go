@@ -1192,28 +1192,28 @@ func TestGettersBenchmarkRunRequestContent(t *testing.T) {
 		_ = obj.GetStringOptional() // Should return zero value
 	})
 
-	t.Run("GetUnknownListOptional", func(t *testing.T) {
+	t.Run("GetBenchmarkRunRequestContentOneItemListOptional", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &BenchmarkRunRequestContent{}
-		var expected []any
-		obj.UnknownListOptional = expected
+		var expected []*BenchmarkRunRequestContentOneItem
+		obj.BenchmarkRunRequestContentOneItemListOptional = expected
 
 		// Act & Assert
-		assert.Equal(t, expected, obj.GetUnknownListOptional(), "getter should return the property value")
+		assert.Equal(t, expected, obj.GetBenchmarkRunRequestContentOneItemListOptional(), "getter should return the property value")
 	})
 
-	t.Run("GetUnknownListOptional_NilValue", func(t *testing.T) {
+	t.Run("GetBenchmarkRunRequestContentOneItemListOptional_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &BenchmarkRunRequestContent{}
-		obj.UnknownListOptional = nil
+		obj.BenchmarkRunRequestContentOneItemListOptional = nil
 
 		// Act & Assert
-		assert.Nil(t, obj.GetUnknownListOptional(), "getter should return nil when property is nil")
+		assert.Nil(t, obj.GetBenchmarkRunRequestContentOneItemListOptional(), "getter should return nil when property is nil")
 	})
 
-	t.Run("GetUnknownListOptional_NilReceiver", func(t *testing.T) {
+	t.Run("GetBenchmarkRunRequestContentOneItemListOptional_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *BenchmarkRunRequestContent
 		// Should not panic - getters should handle nil receiver gracefully
@@ -1222,7 +1222,66 @@ func TestGettersBenchmarkRunRequestContent(t *testing.T) {
 				t.Errorf("Getter panicked on nil receiver: %v", r)
 			}
 		}()
-		_ = obj.GetUnknownListOptional() // Should return zero value
+		_ = obj.GetBenchmarkRunRequestContentOneItemListOptional() // Should return zero value
+	})
+
+}
+
+func TestGettersBenchmarkRunRequestContentOneItem(t *testing.T) {
+	t.Run("GetString", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &BenchmarkRunRequestContentOneItem{}
+		var expected string
+		obj.String = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetString(), "getter should return the property value")
+	})
+
+	t.Run("GetString_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *BenchmarkRunRequestContentOneItem
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetString() // Should return zero value
+	})
+
+	t.Run("GetChatMessage", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &BenchmarkRunRequestContentOneItem{}
+		var expected *ChatMessage
+		obj.ChatMessage = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetChatMessage(), "getter should return the property value")
+	})
+
+	t.Run("GetChatMessage_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &BenchmarkRunRequestContentOneItem{}
+		obj.ChatMessage = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetChatMessage(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetChatMessage_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *BenchmarkRunRequestContentOneItem
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetChatMessage() // Should return zero value
 	})
 
 }

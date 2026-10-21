@@ -80,7 +80,7 @@ func (r *RawClient) GetChatwootChannelStatus(
 
 func (r *RawClient) ReceiveChatwootWebhook(
 	ctx context.Context,
-	request *apgsdkgo.ReceiveChatwootWebhookRequest,
+	request *apgsdkgo.ChatwootWebhookPayload,
 	opts ...option.RequestOption,
 ) (*core.Response[any], error) {
 	options := core.NewRequestOptions(opts...)
@@ -91,7 +91,7 @@ func (r *RawClient) ReceiveChatwootWebhook(
 	)
 	endpointURL := internal.EncodeURL(
 		baseURL+"/channels/%v/chatwoot",
-		request.ID,
+		request.ChannelID,
 	)
 	headers := internal.MergeHeaders(
 		r.options.ToHeader(),

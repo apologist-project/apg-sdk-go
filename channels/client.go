@@ -65,10 +65,70 @@ func (c *Client) GetChatwootChannelStatus(
 //
 // Example:
 //
-//	request := &apgsdkgo.ReceiveChatwootWebhookRequest{
-//	    ID: "id",
-//	    Body: map[string]any{
-//	        "key": "value",
+//	request := &apgsdkgo.ChatwootWebhookPayload{
+//	    ChannelID: "91",
+//	    ChatwootSignature: apgsdkgo.String(
+//	        "sha256=2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+//	    ),
+//	    ChatwootTimestamp: apgsdkgo.String(
+//	        "1710000000",
+//	    ),
+//	    Event: apgsdkgo.String(
+//	        "message_created",
+//	    ),
+//	    ID: apgsdkgo.Int(
+//	        9001,
+//	    ),
+//	    Content: apgsdkgo.String(
+//	        "Hello from Messenger",
+//	    ),
+//	    MessageType: apgsdkgo.String(
+//	        "incoming",
+//	    ),
+//	    Private: apgsdkgo.Bool(
+//	        false,
+//	    ),
+//	    Account: &apgsdkgo.ChatwootWebhookPayloadAccount{
+//	        ID: apgsdkgo.Int(
+//	            7,
+//	        ),
+//	    },
+//	    Sender: &apgsdkgo.ChatwootWebhookPayloadSender{
+//	        ID: apgsdkgo.Int(
+//	            55,
+//	        ),
+//	        Name: apgsdkgo.String(
+//	            "Pat",
+//	        ),
+//	        Type: apgsdkgo.String(
+//	            "contact",
+//	        ),
+//	    },
+//	    Conversation: &apgsdkgo.ChatwootWebhookPayloadConversation{
+//	        ID: apgsdkgo.Int(
+//	            42,
+//	        ),
+//	        Status: apgsdkgo.String(
+//	            "pending",
+//	        ),
+//	        Account: &apgsdkgo.ChatwootWebhookPayloadConversationAccount{
+//	            ID: apgsdkgo.Int(
+//	                7,
+//	            ),
+//	        },
+//	        Meta: &apgsdkgo.ChatwootConversationMeta{
+//	            AssigneeType: apgsdkgo.String(
+//	                "AgentBot",
+//	            ),
+//	            Sender: &apgsdkgo.ChatwootConversationMetaSender{
+//	                ID: apgsdkgo.Int(
+//	                    55,
+//	                ),
+//	                Name: apgsdkgo.String(
+//	                    "Pat",
+//	                ),
+//	            },
+//	        },
 //	    },
 //	}
 //	client.Channels.ReceiveChatwootWebhook(
@@ -77,7 +137,7 @@ func (c *Client) GetChatwootChannelStatus(
 //	)
 func (c *Client) ReceiveChatwootWebhook(
 	ctx context.Context,
-	request *apgsdkgo.ReceiveChatwootWebhookRequest,
+	request *apgsdkgo.ChatwootWebhookPayload,
 	opts ...option.RequestOption,
 ) error {
 	_, err := c.WithRawResponse.ReceiveChatwootWebhook(
@@ -350,7 +410,7 @@ func (c *Client) ReceiveTwilioMessage(
 	return nil
 }
 
-// Handles the Meta WhatsApp Cloud API webhook verification handshake, echoing `hub.challenge` when `hub.verify_token` matches the channel's configured token.
+// Handles the Meta WhatsApp Cloud API webhook verification handshake. Requires an `api_key` query parameter or `x-api-key` header, then echoes `hub.challenge` when `hub.verify_token` matches the channel's configured token.
 //
 // Example:
 //
@@ -379,7 +439,7 @@ func (c *Client) VerifyWhatsAppWebhook(
 	return response.Body, nil
 }
 
-// Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. Signature verification via `x-hub-signature-256` is used when the channel has an App Secret configured; otherwise the webhook relies on URL secrecy and/or an `api_key` query parameter.
+// Receives WhatsApp Cloud API message events for the channel. Payload shape is defined by Meta. An `api_key` query parameter or `x-api-key` header is required. Signature verification via `x-hub-signature-256` is also required when the channel has an App Secret configured.
 //
 // Example:
 //
