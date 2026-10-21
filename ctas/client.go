@@ -38,11 +38,7 @@ func NewClient(options *core.RequestOptions) *Client {
 //
 // Example:
 //
-//	request := &apgsdkgo.CtaMatchRequest{
-//	    Unknown: map[string]any{
-//	        "key": "value",
-//	    },
-//	}
+//	request := &apgsdkgo.CtaMatchRequest{}
 //	client.CtAs.MatchCtas(
 //	    context.TODO(),
 //	    request,

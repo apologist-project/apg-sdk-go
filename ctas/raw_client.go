@@ -48,6 +48,7 @@ func (r *RawClient) MatchCtas(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/json")
 	var response *apgsdkgo.MatchCtasResponse
 	raw, err := r.caller.Call(
 		ctx,

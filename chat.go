@@ -10,6 +10,373 @@ import (
 )
 
 var (
+	anonymizeCompletionRequestFieldID = big.NewInt(1 << 0)
+)
+
+type AnonymizeCompletionRequest struct {
+	// The numeric id or UUID of the chat completion
+	ID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (a *AnonymizeCompletionRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AnonymizeCompletionRequest) SetID(id string) {
+	a.ID = id
+	a.require(anonymizeCompletionRequestFieldID)
+}
+
+var (
+	chatCompletionRequestFieldTraceparent         = big.NewInt(1 << 0)
+	chatCompletionRequestFieldTracestate          = big.NewInt(1 << 1)
+	chatCompletionRequestFieldBaggage             = big.NewInt(1 << 2)
+	chatCompletionRequestFieldAudio               = big.NewInt(1 << 3)
+	chatCompletionRequestFieldFrequencyPenalty    = big.NewInt(1 << 4)
+	chatCompletionRequestFieldLogitBias           = big.NewInt(1 << 5)
+	chatCompletionRequestFieldLogprobs            = big.NewInt(1 << 6)
+	chatCompletionRequestFieldTopLogprobs         = big.NewInt(1 << 7)
+	chatCompletionRequestFieldMaxCompletionTokens = big.NewInt(1 << 8)
+	chatCompletionRequestFieldMaxTokens           = big.NewInt(1 << 9)
+	chatCompletionRequestFieldMessages            = big.NewInt(1 << 10)
+	chatCompletionRequestFieldMetadata            = big.NewInt(1 << 11)
+	chatCompletionRequestFieldModalities          = big.NewInt(1 << 12)
+	chatCompletionRequestFieldModel               = big.NewInt(1 << 13)
+	chatCompletionRequestFieldN                   = big.NewInt(1 << 14)
+	chatCompletionRequestFieldParallelToolCalls   = big.NewInt(1 << 15)
+	chatCompletionRequestFieldPrediction          = big.NewInt(1 << 16)
+	chatCompletionRequestFieldPresencePenalty     = big.NewInt(1 << 17)
+	chatCompletionRequestFieldPrompt              = big.NewInt(1 << 18)
+	chatCompletionRequestFieldReasoningEffort     = big.NewInt(1 << 19)
+	chatCompletionRequestFieldVerbosity           = big.NewInt(1 << 20)
+	chatCompletionRequestFieldResponseFormat      = big.NewInt(1 << 21)
+	chatCompletionRequestFieldSeed                = big.NewInt(1 << 22)
+	chatCompletionRequestFieldServiceTier         = big.NewInt(1 << 23)
+	chatCompletionRequestFieldStop                = big.NewInt(1 << 24)
+	chatCompletionRequestFieldStore               = big.NewInt(1 << 25)
+	chatCompletionRequestFieldStream              = big.NewInt(1 << 26)
+	chatCompletionRequestFieldStreamOptions       = big.NewInt(1 << 27)
+	chatCompletionRequestFieldTemperature         = big.NewInt(1 << 28)
+	chatCompletionRequestFieldTopP                = big.NewInt(1 << 29)
+	chatCompletionRequestFieldTools               = big.NewInt(1 << 30)
+	chatCompletionRequestFieldToolChoice          = big.NewInt(1 << 31)
+	chatCompletionRequestFieldUser                = big.NewInt(1 << 32)
+)
+
+type ChatCompletionRequest struct {
+	// W3C Trace Context parent. When present, the Agent continues this trace for the request. Applies to all `/api/v1` endpoints.
+	Traceparent *string `json:"-" url:"-"`
+	// Optional W3C tracestate associated with traceparent.
+	Tracestate *string `json:"-" url:"-"`
+	// Optional W3C baggage. Prompt text is never copied onto spans.
+	Baggage          *string                        `json:"-" url:"-"`
+	Audio            map[string]any                 `json:"audio,omitempty" url:"-"`
+	FrequencyPenalty *float64                       `json:"frequency_penalty,omitempty" url:"-"`
+	LogitBias        map[string]any                 `json:"logit_bias,omitempty" url:"-"`
+	Logprobs         *ChatCompletionRequestLogprobs `json:"logprobs,omitempty" url:"-"`
+	TopLogprobs      *int                           `json:"top_logprobs,omitempty" url:"-"`
+	// Output-token cap for this request. An API key may set this above the agent's Max Output Tokens. The value cannot exceed the model's maximum. Requests without an API key keep the agent's Max Output Tokens.
+	MaxCompletionTokens *int `json:"max_completion_tokens,omitempty" url:"-"`
+	MaxTokens           *int `json:"max_tokens,omitempty" url:"-"`
+	// Chat messages in OpenAI format. Required when `prompt` is omitted.
+	Messages          []*ChatMessage                 `json:"messages,omitempty" url:"-"`
+	Metadata          *ChatCompletionRequestMetadata `json:"metadata,omitempty" url:"-"`
+	Modalities        []any                          `json:"modalities,omitempty" url:"-"`
+	Model             *string                        `json:"model,omitempty" url:"-"`
+	N                 *int                           `json:"n,omitempty" url:"-"`
+	ParallelToolCalls *bool                          `json:"parallel_tool_calls,omitempty" url:"-"`
+	Prediction        map[string]any                 `json:"prediction,omitempty" url:"-"`
+	PresencePenalty   *float64                       `json:"presence_penalty,omitempty" url:"-"`
+	// User text to complete. Required when `messages` is omitted.
+	Prompt          *string                               `json:"prompt,omitempty" url:"-"`
+	ReasoningEffort *ChatCompletionRequestReasoningEffort `json:"reasoning_effort,omitempty" url:"-"`
+	Verbosity       *ChatCompletionRequestVerbosity       `json:"verbosity,omitempty" url:"-"`
+	ResponseFormat  *ChatCompletionRequestResponseFormat  `json:"response_format,omitempty" url:"-"`
+	Seed            *int                                  `json:"seed,omitempty" url:"-"`
+	ServiceTier     *string                               `json:"service_tier,omitempty" url:"-"`
+	Stop            *string                               `json:"stop,omitempty" url:"-"`
+	Store           *bool                                 `json:"store,omitempty" url:"-"`
+	Stream          *bool                                 `json:"stream,omitempty" url:"-"`
+	StreamOptions   map[string]any                        `json:"stream_options,omitempty" url:"-"`
+	Temperature     *float64                              `json:"temperature,omitempty" url:"-"`
+	TopP            *float64                              `json:"top_p,omitempty" url:"-"`
+	// OpenAI-compatible function tool definitions. Passed through to the model as declaration-only tools (the client executes them and returns role=tool messages).
+	Tools      []any                            `json:"tools,omitempty" url:"-"`
+	ToolChoice *ChatCompletionRequestToolChoice `json:"tool_choice,omitempty" url:"-"`
+	User       *string                          `json:"user,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (c *ChatCompletionRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetTraceparent sets the Traceparent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTraceparent(traceparent *string) {
+	c.Traceparent = traceparent
+	c.require(chatCompletionRequestFieldTraceparent)
+}
+
+// SetTracestate sets the Tracestate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTracestate(tracestate *string) {
+	c.Tracestate = tracestate
+	c.require(chatCompletionRequestFieldTracestate)
+}
+
+// SetBaggage sets the Baggage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetBaggage(baggage *string) {
+	c.Baggage = baggage
+	c.require(chatCompletionRequestFieldBaggage)
+}
+
+// SetAudio sets the Audio field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetAudio(audio map[string]any) {
+	c.Audio = audio
+	c.require(chatCompletionRequestFieldAudio)
+}
+
+// SetFrequencyPenalty sets the FrequencyPenalty field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetFrequencyPenalty(frequencyPenalty *float64) {
+	c.FrequencyPenalty = frequencyPenalty
+	c.require(chatCompletionRequestFieldFrequencyPenalty)
+}
+
+// SetLogitBias sets the LogitBias field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetLogitBias(logitBias map[string]any) {
+	c.LogitBias = logitBias
+	c.require(chatCompletionRequestFieldLogitBias)
+}
+
+// SetLogprobs sets the Logprobs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetLogprobs(logprobs *ChatCompletionRequestLogprobs) {
+	c.Logprobs = logprobs
+	c.require(chatCompletionRequestFieldLogprobs)
+}
+
+// SetTopLogprobs sets the TopLogprobs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTopLogprobs(topLogprobs *int) {
+	c.TopLogprobs = topLogprobs
+	c.require(chatCompletionRequestFieldTopLogprobs)
+}
+
+// SetMaxCompletionTokens sets the MaxCompletionTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetMaxCompletionTokens(maxCompletionTokens *int) {
+	c.MaxCompletionTokens = maxCompletionTokens
+	c.require(chatCompletionRequestFieldMaxCompletionTokens)
+}
+
+// SetMaxTokens sets the MaxTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetMaxTokens(maxTokens *int) {
+	c.MaxTokens = maxTokens
+	c.require(chatCompletionRequestFieldMaxTokens)
+}
+
+// SetMessages sets the Messages field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetMessages(messages []*ChatMessage) {
+	c.Messages = messages
+	c.require(chatCompletionRequestFieldMessages)
+}
+
+// SetMetadata sets the Metadata field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetMetadata(metadata *ChatCompletionRequestMetadata) {
+	c.Metadata = metadata
+	c.require(chatCompletionRequestFieldMetadata)
+}
+
+// SetModalities sets the Modalities field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetModalities(modalities []any) {
+	c.Modalities = modalities
+	c.require(chatCompletionRequestFieldModalities)
+}
+
+// SetModel sets the Model field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetModel(model *string) {
+	c.Model = model
+	c.require(chatCompletionRequestFieldModel)
+}
+
+// SetN sets the N field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetN(n *int) {
+	c.N = n
+	c.require(chatCompletionRequestFieldN)
+}
+
+// SetParallelToolCalls sets the ParallelToolCalls field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetParallelToolCalls(parallelToolCalls *bool) {
+	c.ParallelToolCalls = parallelToolCalls
+	c.require(chatCompletionRequestFieldParallelToolCalls)
+}
+
+// SetPrediction sets the Prediction field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetPrediction(prediction map[string]any) {
+	c.Prediction = prediction
+	c.require(chatCompletionRequestFieldPrediction)
+}
+
+// SetPresencePenalty sets the PresencePenalty field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetPresencePenalty(presencePenalty *float64) {
+	c.PresencePenalty = presencePenalty
+	c.require(chatCompletionRequestFieldPresencePenalty)
+}
+
+// SetPrompt sets the Prompt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetPrompt(prompt *string) {
+	c.Prompt = prompt
+	c.require(chatCompletionRequestFieldPrompt)
+}
+
+// SetReasoningEffort sets the ReasoningEffort field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetReasoningEffort(reasoningEffort *ChatCompletionRequestReasoningEffort) {
+	c.ReasoningEffort = reasoningEffort
+	c.require(chatCompletionRequestFieldReasoningEffort)
+}
+
+// SetVerbosity sets the Verbosity field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetVerbosity(verbosity *ChatCompletionRequestVerbosity) {
+	c.Verbosity = verbosity
+	c.require(chatCompletionRequestFieldVerbosity)
+}
+
+// SetResponseFormat sets the ResponseFormat field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetResponseFormat(responseFormat *ChatCompletionRequestResponseFormat) {
+	c.ResponseFormat = responseFormat
+	c.require(chatCompletionRequestFieldResponseFormat)
+}
+
+// SetSeed sets the Seed field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetSeed(seed *int) {
+	c.Seed = seed
+	c.require(chatCompletionRequestFieldSeed)
+}
+
+// SetServiceTier sets the ServiceTier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetServiceTier(serviceTier *string) {
+	c.ServiceTier = serviceTier
+	c.require(chatCompletionRequestFieldServiceTier)
+}
+
+// SetStop sets the Stop field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetStop(stop *string) {
+	c.Stop = stop
+	c.require(chatCompletionRequestFieldStop)
+}
+
+// SetStore sets the Store field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetStore(store *bool) {
+	c.Store = store
+	c.require(chatCompletionRequestFieldStore)
+}
+
+// SetStream sets the Stream field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetStream(stream *bool) {
+	c.Stream = stream
+	c.require(chatCompletionRequestFieldStream)
+}
+
+// SetStreamOptions sets the StreamOptions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetStreamOptions(streamOptions map[string]any) {
+	c.StreamOptions = streamOptions
+	c.require(chatCompletionRequestFieldStreamOptions)
+}
+
+// SetTemperature sets the Temperature field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTemperature(temperature *float64) {
+	c.Temperature = temperature
+	c.require(chatCompletionRequestFieldTemperature)
+}
+
+// SetTopP sets the TopP field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTopP(topP *float64) {
+	c.TopP = topP
+	c.require(chatCompletionRequestFieldTopP)
+}
+
+// SetTools sets the Tools field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetTools(tools []any) {
+	c.Tools = tools
+	c.require(chatCompletionRequestFieldTools)
+}
+
+// SetToolChoice sets the ToolChoice field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetToolChoice(toolChoice *ChatCompletionRequestToolChoice) {
+	c.ToolChoice = toolChoice
+	c.require(chatCompletionRequestFieldToolChoice)
+}
+
+// SetUser sets the User field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionRequest) SetUser(user *string) {
+	c.User = user
+	c.require(chatCompletionRequestFieldUser)
+}
+
+func (c *ChatCompletionRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatCompletionRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*c = ChatCompletionRequest(body)
+	return nil
+}
+
+func (c *ChatCompletionRequest) MarshalJSON() ([]byte, error) {
+	type embed ChatCompletionRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	feedbackRequestFieldID       = big.NewInt(1 << 0)
 	feedbackRequestFieldFeedback = big.NewInt(1 << 1)
 )
@@ -204,28 +571,37 @@ func (l *LikeRequest) MarshalJSON() ([]byte, error) {
 }
 
 var (
-	listChatCompletionsRequestFieldPage           = big.NewInt(1 << 0)
-	listChatCompletionsRequestFieldPerPage        = big.NewInt(1 << 1)
-	listChatCompletionsRequestFieldAgentID        = big.NewInt(1 << 2)
-	listChatCompletionsRequestFieldChannelID      = big.NewInt(1 << 3)
-	listChatCompletionsRequestFieldBibleID        = big.NewInt(1 << 4)
-	listChatCompletionsRequestFieldCached         = big.NewInt(1 << 5)
-	listChatCompletionsRequestFieldClient         = big.NewInt(1 << 6)
-	listChatCompletionsRequestFieldConfigID       = big.NewInt(1 << 7)
-	listChatCompletionsRequestFieldConversationID = big.NewInt(1 << 8)
-	listChatCompletionsRequestFieldDeviceID       = big.NewInt(1 << 9)
-	listChatCompletionsRequestFieldFlagged        = big.NewInt(1 << 10)
-	listChatCompletionsRequestFieldFavorited      = big.NewInt(1 << 11)
-	listChatCompletionsRequestFieldLanguage       = big.NewInt(1 << 12)
-	listChatCompletionsRequestFieldLiked          = big.NewInt(1 << 13)
-	listChatCompletionsRequestFieldSessionID      = big.NewInt(1 << 14)
-	listChatCompletionsRequestFieldUserID         = big.NewInt(1 << 15)
-	listChatCompletionsRequestFieldMinTimestamp   = big.NewInt(1 << 16)
-	listChatCompletionsRequestFieldMaxTimestamp   = big.NewInt(1 << 17)
+	listChatCompletionsRequestFieldTraceparent    = big.NewInt(1 << 0)
+	listChatCompletionsRequestFieldTracestate     = big.NewInt(1 << 1)
+	listChatCompletionsRequestFieldBaggage        = big.NewInt(1 << 2)
+	listChatCompletionsRequestFieldPage           = big.NewInt(1 << 3)
+	listChatCompletionsRequestFieldPerPage        = big.NewInt(1 << 4)
+	listChatCompletionsRequestFieldAgentID        = big.NewInt(1 << 5)
+	listChatCompletionsRequestFieldChannelID      = big.NewInt(1 << 6)
+	listChatCompletionsRequestFieldBibleID        = big.NewInt(1 << 7)
+	listChatCompletionsRequestFieldCached         = big.NewInt(1 << 8)
+	listChatCompletionsRequestFieldClient         = big.NewInt(1 << 9)
+	listChatCompletionsRequestFieldConfigID       = big.NewInt(1 << 10)
+	listChatCompletionsRequestFieldConversationID = big.NewInt(1 << 11)
+	listChatCompletionsRequestFieldDeviceID       = big.NewInt(1 << 12)
+	listChatCompletionsRequestFieldFlagged        = big.NewInt(1 << 13)
+	listChatCompletionsRequestFieldFavorited      = big.NewInt(1 << 14)
+	listChatCompletionsRequestFieldLanguage       = big.NewInt(1 << 15)
+	listChatCompletionsRequestFieldLiked          = big.NewInt(1 << 16)
+	listChatCompletionsRequestFieldSessionID      = big.NewInt(1 << 17)
+	listChatCompletionsRequestFieldUserID         = big.NewInt(1 << 18)
+	listChatCompletionsRequestFieldMinTimestamp   = big.NewInt(1 << 19)
+	listChatCompletionsRequestFieldMaxTimestamp   = big.NewInt(1 << 20)
 )
 
 type ListChatCompletionsRequest struct {
-	Page *int `json:"-" url:"page,omitempty"`
+	// W3C Trace Context parent. When present, the Agent continues this trace for the request. Applies to all `/api/v1` endpoints.
+	Traceparent *string `json:"-" url:"-"`
+	// Optional W3C tracestate associated with traceparent.
+	Tracestate *string `json:"-" url:"-"`
+	// Optional W3C baggage. Prompt text is never copied onto spans.
+	Baggage *string `json:"-" url:"-"`
+	Page    *int    `json:"-" url:"page,omitempty"`
 	// Results per page (clamped to 100).
 	PerPage        *int    `json:"-" url:"per_page,omitempty"`
 	AgentID        *string `json:"-" url:"agent_id,omitempty"`
@@ -254,6 +630,27 @@ func (l *ListChatCompletionsRequest) require(field *big.Int) {
 		l.explicitFields = big.NewInt(0)
 	}
 	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetTraceparent sets the Traceparent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListChatCompletionsRequest) SetTraceparent(traceparent *string) {
+	l.Traceparent = traceparent
+	l.require(listChatCompletionsRequestFieldTraceparent)
+}
+
+// SetTracestate sets the Tracestate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListChatCompletionsRequest) SetTracestate(tracestate *string) {
+	l.Tracestate = tracestate
+	l.require(listChatCompletionsRequestFieldTracestate)
+}
+
+// SetBaggage sets the Baggage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListChatCompletionsRequest) SetBaggage(baggage *string) {
+	l.Baggage = baggage
+	l.require(listChatCompletionsRequestFieldBaggage)
 }
 
 // SetPage sets the Page field and marks it as non-optional;
@@ -383,6 +780,32 @@ func (l *ListChatCompletionsRequest) SetMaxTimestamp(maxTimestamp *string) {
 }
 
 var (
+	scrubCompletionRequestFieldID = big.NewInt(1 << 0)
+)
+
+type ScrubCompletionRequest struct {
+	// The numeric id or UUID of the chat completion
+	ID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (s *ScrubCompletionRequest) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ScrubCompletionRequest) SetID(id string) {
+	s.ID = id
+	s.require(scrubCompletionRequestFieldID)
+}
+
+var (
 	shareRequestFieldID             = big.NewInt(1 << 0)
 	shareRequestFieldConversationID = big.NewInt(1 << 1)
 	shareRequestFieldSessionID      = big.NewInt(1 << 2)
@@ -456,45 +879,674 @@ func (s *ShareRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
-type ChatCompletionRequest struct {
-	Unknown any
+var (
+	chatCompletionResponseFieldID      = big.NewInt(1 << 0)
+	chatCompletionResponseFieldObject  = big.NewInt(1 << 1)
+	chatCompletionResponseFieldCreated = big.NewInt(1 << 2)
+	chatCompletionResponseFieldModel   = big.NewInt(1 << 3)
+	chatCompletionResponseFieldChoices = big.NewInt(1 << 4)
+	chatCompletionResponseFieldUsage   = big.NewInt(1 << 5)
+	chatCompletionResponseFieldCached  = big.NewInt(1 << 6)
+)
 
-	typ string
+type ChatCompletionResponse struct {
+	ID      *string                              `json:"id,omitempty" url:"id,omitempty"`
+	Object  *string                              `json:"object,omitempty" url:"object,omitempty"`
+	Created *int                                 `json:"created,omitempty" url:"created,omitempty"`
+	Model   *string                              `json:"model,omitempty" url:"model,omitempty"`
+	Choices []*ChatCompletionResponseChoicesItem `json:"choices,omitempty" url:"choices,omitempty"`
+	Usage   *ChatCompletionResponseUsage         `json:"usage,omitempty" url:"usage,omitempty"`
+	Cached  *bool                                `json:"cached,omitempty" url:"cached,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
 }
 
-func (c *ChatCompletionRequest) GetUnknown() any {
+func (c *ChatCompletionResponse) GetID() *string {
 	if c == nil {
 		return nil
 	}
-	return c.Unknown
+	return c.ID
 }
 
-func (c *ChatCompletionRequest) UnmarshalJSON(data []byte) error {
-	var valueUnknown any
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typ = "Unknown"
-		c.Unknown = valueUnknown
+func (c *ChatCompletionResponse) GetObject() *string {
+	if c == nil {
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+	return c.Object
 }
 
-func (c ChatCompletionRequest) MarshalJSON() ([]byte, error) {
-	if c.typ == "Unknown" || c.Unknown != nil {
-		return json.Marshal(c.Unknown)
+func (c *ChatCompletionResponse) GetCreated() *int {
+	if c == nil {
+		return nil
 	}
-	return nil, fmt.Errorf("type %T does not include a non-empty union type", c)
+	return c.Created
 }
 
-type ChatCompletionRequestVisitor interface {
-	VisitUnknown(any) error
-}
-
-func (c *ChatCompletionRequest) Accept(visitor ChatCompletionRequestVisitor) error {
-	if c.typ == "Unknown" || c.Unknown != nil {
-		return visitor.VisitUnknown(c.Unknown)
+func (c *ChatCompletionResponse) GetModel() *string {
+	if c == nil {
+		return nil
 	}
-	return fmt.Errorf("type %T does not include a non-empty union type", c)
+	return c.Model
+}
+
+func (c *ChatCompletionResponse) GetChoices() []*ChatCompletionResponseChoicesItem {
+	if c == nil {
+		return nil
+	}
+	return c.Choices
+}
+
+func (c *ChatCompletionResponse) GetUsage() *ChatCompletionResponseUsage {
+	if c == nil {
+		return nil
+	}
+	return c.Usage
+}
+
+func (c *ChatCompletionResponse) GetCached() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.Cached
+}
+
+func (c *ChatCompletionResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ChatCompletionResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetID(id *string) {
+	c.ID = id
+	c.require(chatCompletionResponseFieldID)
+}
+
+// SetObject sets the Object field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetObject(object *string) {
+	c.Object = object
+	c.require(chatCompletionResponseFieldObject)
+}
+
+// SetCreated sets the Created field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetCreated(created *int) {
+	c.Created = created
+	c.require(chatCompletionResponseFieldCreated)
+}
+
+// SetModel sets the Model field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetModel(model *string) {
+	c.Model = model
+	c.require(chatCompletionResponseFieldModel)
+}
+
+// SetChoices sets the Choices field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetChoices(choices []*ChatCompletionResponseChoicesItem) {
+	c.Choices = choices
+	c.require(chatCompletionResponseFieldChoices)
+}
+
+// SetUsage sets the Usage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetUsage(usage *ChatCompletionResponseUsage) {
+	c.Usage = usage
+	c.require(chatCompletionResponseFieldUsage)
+}
+
+// SetCached sets the Cached field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponse) SetCached(cached *bool) {
+	c.Cached = cached
+	c.require(chatCompletionResponseFieldCached)
+}
+
+func (c *ChatCompletionResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatCompletionResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ChatCompletionResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatCompletionResponse) MarshalJSON() ([]byte, error) {
+	type embed ChatCompletionResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ChatCompletionResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	chatCompletionResponseChoicesItemFieldIndex        = big.NewInt(1 << 0)
+	chatCompletionResponseChoicesItemFieldMessage      = big.NewInt(1 << 1)
+	chatCompletionResponseChoicesItemFieldLogprobs     = big.NewInt(1 << 2)
+	chatCompletionResponseChoicesItemFieldFinishReason = big.NewInt(1 << 3)
+)
+
+type ChatCompletionResponseChoicesItem struct {
+	Index        *int           `json:"index,omitempty" url:"index,omitempty"`
+	Message      *ChatMessage   `json:"message,omitempty" url:"message,omitempty"`
+	Logprobs     map[string]any `json:"logprobs,omitempty" url:"logprobs,omitempty"`
+	FinishReason *string        `json:"finish_reason,omitempty" url:"finish_reason,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ChatCompletionResponseChoicesItem) GetIndex() *int {
+	if c == nil {
+		return nil
+	}
+	return c.Index
+}
+
+func (c *ChatCompletionResponseChoicesItem) GetMessage() *ChatMessage {
+	if c == nil {
+		return nil
+	}
+	return c.Message
+}
+
+func (c *ChatCompletionResponseChoicesItem) GetLogprobs() map[string]any {
+	if c == nil {
+		return nil
+	}
+	return c.Logprobs
+}
+
+func (c *ChatCompletionResponseChoicesItem) GetFinishReason() *string {
+	if c == nil {
+		return nil
+	}
+	return c.FinishReason
+}
+
+func (c *ChatCompletionResponseChoicesItem) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ChatCompletionResponseChoicesItem) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetIndex sets the Index field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseChoicesItem) SetIndex(index *int) {
+	c.Index = index
+	c.require(chatCompletionResponseChoicesItemFieldIndex)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseChoicesItem) SetMessage(message *ChatMessage) {
+	c.Message = message
+	c.require(chatCompletionResponseChoicesItemFieldMessage)
+}
+
+// SetLogprobs sets the Logprobs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseChoicesItem) SetLogprobs(logprobs map[string]any) {
+	c.Logprobs = logprobs
+	c.require(chatCompletionResponseChoicesItemFieldLogprobs)
+}
+
+// SetFinishReason sets the FinishReason field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseChoicesItem) SetFinishReason(finishReason *string) {
+	c.FinishReason = finishReason
+	c.require(chatCompletionResponseChoicesItemFieldFinishReason)
+}
+
+func (c *ChatCompletionResponseChoicesItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatCompletionResponseChoicesItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ChatCompletionResponseChoicesItem(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatCompletionResponseChoicesItem) MarshalJSON() ([]byte, error) {
+	type embed ChatCompletionResponseChoicesItem
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ChatCompletionResponseChoicesItem) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	chatCompletionResponseUsageFieldPromptTokens     = big.NewInt(1 << 0)
+	chatCompletionResponseUsageFieldCompletionTokens = big.NewInt(1 << 1)
+	chatCompletionResponseUsageFieldTotalTokens      = big.NewInt(1 << 2)
+)
+
+type ChatCompletionResponseUsage struct {
+	PromptTokens     *int `json:"prompt_tokens,omitempty" url:"prompt_tokens,omitempty"`
+	CompletionTokens *int `json:"completion_tokens,omitempty" url:"completion_tokens,omitempty"`
+	TotalTokens      *int `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ChatCompletionResponseUsage) GetPromptTokens() *int {
+	if c == nil {
+		return nil
+	}
+	return c.PromptTokens
+}
+
+func (c *ChatCompletionResponseUsage) GetCompletionTokens() *int {
+	if c == nil {
+		return nil
+	}
+	return c.CompletionTokens
+}
+
+func (c *ChatCompletionResponseUsage) GetTotalTokens() *int {
+	if c == nil {
+		return nil
+	}
+	return c.TotalTokens
+}
+
+func (c *ChatCompletionResponseUsage) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ChatCompletionResponseUsage) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetPromptTokens sets the PromptTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseUsage) SetPromptTokens(promptTokens *int) {
+	c.PromptTokens = promptTokens
+	c.require(chatCompletionResponseUsageFieldPromptTokens)
+}
+
+// SetCompletionTokens sets the CompletionTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseUsage) SetCompletionTokens(completionTokens *int) {
+	c.CompletionTokens = completionTokens
+	c.require(chatCompletionResponseUsageFieldCompletionTokens)
+}
+
+// SetTotalTokens sets the TotalTokens field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatCompletionResponseUsage) SetTotalTokens(totalTokens *int) {
+	c.TotalTokens = totalTokens
+	c.require(chatCompletionResponseUsageFieldTotalTokens)
+}
+
+func (c *ChatCompletionResponseUsage) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatCompletionResponseUsage
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ChatCompletionResponseUsage(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatCompletionResponseUsage) MarshalJSON() ([]byte, error) {
+	type embed ChatCompletionResponseUsage
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ChatCompletionResponseUsage) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Result of scrubbing or anonymizing a chat completion's message-adjacent text. Rows and identifiers are kept.
+var (
+	completionRedactResponseFieldID               = big.NewInt(1 << 0)
+	completionRedactResponseFieldMode             = big.NewInt(1 << 1)
+	completionRedactResponseFieldMessagesRedacted = big.NewInt(1 << 2)
+	completionRedactResponseFieldRemaining        = big.NewInt(1 << 3)
+)
+
+type CompletionRedactResponse struct {
+	// Chat completion id (UUID).
+	ID   *string                       `json:"id,omitempty" url:"id,omitempty"`
+	Mode *CompletionRedactResponseMode `json:"mode,omitempty" url:"mode,omitempty"`
+	// Message rows rewritten in this request.
+	MessagesRedacted *int `json:"messages_redacted,omitempty" url:"messages_redacted,omitempty"`
+	// Message rows still waiting. Zero means this request finished the completion.
+	Remaining *int `json:"remaining,omitempty" url:"remaining,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CompletionRedactResponse) GetID() *string {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *CompletionRedactResponse) GetMode() *CompletionRedactResponseMode {
+	if c == nil {
+		return nil
+	}
+	return c.Mode
+}
+
+func (c *CompletionRedactResponse) GetMessagesRedacted() *int {
+	if c == nil {
+		return nil
+	}
+	return c.MessagesRedacted
+}
+
+func (c *CompletionRedactResponse) GetRemaining() *int {
+	if c == nil {
+		return nil
+	}
+	return c.Remaining
+}
+
+func (c *CompletionRedactResponse) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CompletionRedactResponse) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompletionRedactResponse) SetID(id *string) {
+	c.ID = id
+	c.require(completionRedactResponseFieldID)
+}
+
+// SetMode sets the Mode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompletionRedactResponse) SetMode(mode *CompletionRedactResponseMode) {
+	c.Mode = mode
+	c.require(completionRedactResponseFieldMode)
+}
+
+// SetMessagesRedacted sets the MessagesRedacted field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompletionRedactResponse) SetMessagesRedacted(messagesRedacted *int) {
+	c.MessagesRedacted = messagesRedacted
+	c.require(completionRedactResponseFieldMessagesRedacted)
+}
+
+// SetRemaining sets the Remaining field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompletionRedactResponse) SetRemaining(remaining *int) {
+	c.Remaining = remaining
+	c.require(completionRedactResponseFieldRemaining)
+}
+
+func (c *CompletionRedactResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler CompletionRedactResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CompletionRedactResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CompletionRedactResponse) MarshalJSON() ([]byte, error) {
+	type embed CompletionRedactResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CompletionRedactResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type CompletionRedactResponseMode string
+
+const (
+	CompletionRedactResponseModeScrub     CompletionRedactResponseMode = "scrub"
+	CompletionRedactResponseModeAnonymize CompletionRedactResponseMode = "anonymize"
+)
+
+func NewCompletionRedactResponseModeFromString(s string) (CompletionRedactResponseMode, error) {
+	switch s {
+	case "scrub":
+		return CompletionRedactResponseModeScrub, nil
+	case "anonymize":
+		return CompletionRedactResponseModeAnonymize, nil
+	}
+	var t CompletionRedactResponseMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CompletionRedactResponseMode) Ptr() *CompletionRedactResponseMode {
+	return &c
+}
+
+var (
+	anonymizeCompletionResponseFieldData = big.NewInt(1 << 0)
+)
+
+type AnonymizeCompletionResponse struct {
+	Data *CompletionRedactResponse `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AnonymizeCompletionResponse) GetData() *CompletionRedactResponse {
+	if a == nil {
+		return nil
+	}
+	return a.Data
+}
+
+func (a *AnonymizeCompletionResponse) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AnonymizeCompletionResponse) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AnonymizeCompletionResponse) SetData(data *CompletionRedactResponse) {
+	a.Data = data
+	a.require(anonymizeCompletionResponseFieldData)
+}
+
+func (a *AnonymizeCompletionResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler AnonymizeCompletionResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AnonymizeCompletionResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AnonymizeCompletionResponse) MarshalJSON() ([]byte, error) {
+	type embed AnonymizeCompletionResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AnonymizeCompletionResponse) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ChatCompletionRequestLogprobs struct {
@@ -577,12 +1629,13 @@ var (
 type ChatCompletionRequestMetadata struct {
 	Anonymous    *bool   `json:"anonymous,omitempty" url:"anonymous,omitempty"`
 	Conversation *string `json:"conversation,omitempty" url:"conversation,omitempty"`
-	Language     *string `json:"language,omitempty" url:"language,omitempty"`
-	MaxMemories  *int    `json:"max_memories,omitempty" url:"max_memories,omitempty"`
-	ParentURL    *string `json:"parent_url,omitempty" url:"parent_url,omitempty"`
-	ParentHost   *string `json:"parent_host,omitempty" url:"parent_host,omitempty"`
-	Session      *string `json:"session,omitempty" url:"session,omitempty"`
-	Device       *string `json:"device,omitempty" url:"device,omitempty"`
+	// ISO language code for this turn, or `auto` to detect from the prompt.
+	Language    *string `json:"language,omitempty" url:"language,omitempty"`
+	MaxMemories *int    `json:"max_memories,omitempty" url:"max_memories,omitempty"`
+	ParentURL   *string `json:"parent_url,omitempty" url:"parent_url,omitempty"`
+	ParentHost  *string `json:"parent_host,omitempty" url:"parent_host,omitempty"`
+	Session     *string `json:"session,omitempty" url:"session,omitempty"`
+	Device      *string `json:"device,omitempty" url:"device,omitempty"`
 	// Acquisition / campaign referral code stored on the user first-write-wins. Empty values are ignored; an existing user referral_code is never overwritten. The Agent UI maps ?ref=, then ?referral_code=, then ?utm_campaign= into this field.
 	ReferralCode *string `json:"referral_code,omitempty" url:"referral_code,omitempty"`
 	SharedPrompt *int    `json:"shared_prompt,omitempty" url:"shared_prompt,omitempty"`
@@ -1227,559 +2280,6 @@ func (c ChatCompletionRequestVerbosity) Ptr() *ChatCompletionRequestVerbosity {
 }
 
 var (
-	chatCompletionResponseFieldID      = big.NewInt(1 << 0)
-	chatCompletionResponseFieldObject  = big.NewInt(1 << 1)
-	chatCompletionResponseFieldCreated = big.NewInt(1 << 2)
-	chatCompletionResponseFieldModel   = big.NewInt(1 << 3)
-	chatCompletionResponseFieldChoices = big.NewInt(1 << 4)
-	chatCompletionResponseFieldUsage   = big.NewInt(1 << 5)
-	chatCompletionResponseFieldCached  = big.NewInt(1 << 6)
-)
-
-type ChatCompletionResponse struct {
-	ID      *string                              `json:"id,omitempty" url:"id,omitempty"`
-	Object  *string                              `json:"object,omitempty" url:"object,omitempty"`
-	Created *int                                 `json:"created,omitempty" url:"created,omitempty"`
-	Model   *string                              `json:"model,omitempty" url:"model,omitempty"`
-	Choices []*ChatCompletionResponseChoicesItem `json:"choices,omitempty" url:"choices,omitempty"`
-	Usage   *ChatCompletionResponseUsage         `json:"usage,omitempty" url:"usage,omitempty"`
-	Cached  *bool                                `json:"cached,omitempty" url:"cached,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (c *ChatCompletionResponse) GetID() *string {
-	if c == nil {
-		return nil
-	}
-	return c.ID
-}
-
-func (c *ChatCompletionResponse) GetObject() *string {
-	if c == nil {
-		return nil
-	}
-	return c.Object
-}
-
-func (c *ChatCompletionResponse) GetCreated() *int {
-	if c == nil {
-		return nil
-	}
-	return c.Created
-}
-
-func (c *ChatCompletionResponse) GetModel() *string {
-	if c == nil {
-		return nil
-	}
-	return c.Model
-}
-
-func (c *ChatCompletionResponse) GetChoices() []*ChatCompletionResponseChoicesItem {
-	if c == nil {
-		return nil
-	}
-	return c.Choices
-}
-
-func (c *ChatCompletionResponse) GetUsage() *ChatCompletionResponseUsage {
-	if c == nil {
-		return nil
-	}
-	return c.Usage
-}
-
-func (c *ChatCompletionResponse) GetCached() *bool {
-	if c == nil {
-		return nil
-	}
-	return c.Cached
-}
-
-func (c *ChatCompletionResponse) GetExtraProperties() map[string]interface{} {
-	if c == nil {
-		return nil
-	}
-	return c.extraProperties
-}
-
-func (c *ChatCompletionResponse) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
-	}
-	c.explicitFields.Or(c.explicitFields, field)
-}
-
-// SetID sets the ID field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetID(id *string) {
-	c.ID = id
-	c.require(chatCompletionResponseFieldID)
-}
-
-// SetObject sets the Object field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetObject(object *string) {
-	c.Object = object
-	c.require(chatCompletionResponseFieldObject)
-}
-
-// SetCreated sets the Created field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetCreated(created *int) {
-	c.Created = created
-	c.require(chatCompletionResponseFieldCreated)
-}
-
-// SetModel sets the Model field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetModel(model *string) {
-	c.Model = model
-	c.require(chatCompletionResponseFieldModel)
-}
-
-// SetChoices sets the Choices field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetChoices(choices []*ChatCompletionResponseChoicesItem) {
-	c.Choices = choices
-	c.require(chatCompletionResponseFieldChoices)
-}
-
-// SetUsage sets the Usage field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetUsage(usage *ChatCompletionResponseUsage) {
-	c.Usage = usage
-	c.require(chatCompletionResponseFieldUsage)
-}
-
-// SetCached sets the Cached field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponse) SetCached(cached *bool) {
-	c.Cached = cached
-	c.require(chatCompletionResponseFieldCached)
-}
-
-func (c *ChatCompletionResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ChatCompletionResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ChatCompletionResponse(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-	c.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ChatCompletionResponse) MarshalJSON() ([]byte, error) {
-	type embed ChatCompletionResponse
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*c),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (c *ChatCompletionResponse) String() string {
-	if c == nil {
-		return "<nil>"
-	}
-	if len(c.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-var (
-	chatCompletionResponseChoicesItemFieldIndex        = big.NewInt(1 << 0)
-	chatCompletionResponseChoicesItemFieldMessage      = big.NewInt(1 << 1)
-	chatCompletionResponseChoicesItemFieldLogprobs     = big.NewInt(1 << 2)
-	chatCompletionResponseChoicesItemFieldFinishReason = big.NewInt(1 << 3)
-)
-
-type ChatCompletionResponseChoicesItem struct {
-	Index        *int           `json:"index,omitempty" url:"index,omitempty"`
-	Message      *ChatMessage   `json:"message,omitempty" url:"message,omitempty"`
-	Logprobs     map[string]any `json:"logprobs,omitempty" url:"logprobs,omitempty"`
-	FinishReason *string        `json:"finish_reason,omitempty" url:"finish_reason,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (c *ChatCompletionResponseChoicesItem) GetIndex() *int {
-	if c == nil {
-		return nil
-	}
-	return c.Index
-}
-
-func (c *ChatCompletionResponseChoicesItem) GetMessage() *ChatMessage {
-	if c == nil {
-		return nil
-	}
-	return c.Message
-}
-
-func (c *ChatCompletionResponseChoicesItem) GetLogprobs() map[string]any {
-	if c == nil {
-		return nil
-	}
-	return c.Logprobs
-}
-
-func (c *ChatCompletionResponseChoicesItem) GetFinishReason() *string {
-	if c == nil {
-		return nil
-	}
-	return c.FinishReason
-}
-
-func (c *ChatCompletionResponseChoicesItem) GetExtraProperties() map[string]interface{} {
-	if c == nil {
-		return nil
-	}
-	return c.extraProperties
-}
-
-func (c *ChatCompletionResponseChoicesItem) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
-	}
-	c.explicitFields.Or(c.explicitFields, field)
-}
-
-// SetIndex sets the Index field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseChoicesItem) SetIndex(index *int) {
-	c.Index = index
-	c.require(chatCompletionResponseChoicesItemFieldIndex)
-}
-
-// SetMessage sets the Message field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseChoicesItem) SetMessage(message *ChatMessage) {
-	c.Message = message
-	c.require(chatCompletionResponseChoicesItemFieldMessage)
-}
-
-// SetLogprobs sets the Logprobs field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseChoicesItem) SetLogprobs(logprobs map[string]any) {
-	c.Logprobs = logprobs
-	c.require(chatCompletionResponseChoicesItemFieldLogprobs)
-}
-
-// SetFinishReason sets the FinishReason field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseChoicesItem) SetFinishReason(finishReason *string) {
-	c.FinishReason = finishReason
-	c.require(chatCompletionResponseChoicesItemFieldFinishReason)
-}
-
-func (c *ChatCompletionResponseChoicesItem) UnmarshalJSON(data []byte) error {
-	type unmarshaler ChatCompletionResponseChoicesItem
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ChatCompletionResponseChoicesItem(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-	c.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ChatCompletionResponseChoicesItem) MarshalJSON() ([]byte, error) {
-	type embed ChatCompletionResponseChoicesItem
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*c),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (c *ChatCompletionResponseChoicesItem) String() string {
-	if c == nil {
-		return "<nil>"
-	}
-	if len(c.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-var (
-	chatCompletionResponseUsageFieldPromptTokens     = big.NewInt(1 << 0)
-	chatCompletionResponseUsageFieldCompletionTokens = big.NewInt(1 << 1)
-	chatCompletionResponseUsageFieldTotalTokens      = big.NewInt(1 << 2)
-)
-
-type ChatCompletionResponseUsage struct {
-	PromptTokens     *int `json:"prompt_tokens,omitempty" url:"prompt_tokens,omitempty"`
-	CompletionTokens *int `json:"completion_tokens,omitempty" url:"completion_tokens,omitempty"`
-	TotalTokens      *int `json:"total_tokens,omitempty" url:"total_tokens,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (c *ChatCompletionResponseUsage) GetPromptTokens() *int {
-	if c == nil {
-		return nil
-	}
-	return c.PromptTokens
-}
-
-func (c *ChatCompletionResponseUsage) GetCompletionTokens() *int {
-	if c == nil {
-		return nil
-	}
-	return c.CompletionTokens
-}
-
-func (c *ChatCompletionResponseUsage) GetTotalTokens() *int {
-	if c == nil {
-		return nil
-	}
-	return c.TotalTokens
-}
-
-func (c *ChatCompletionResponseUsage) GetExtraProperties() map[string]interface{} {
-	if c == nil {
-		return nil
-	}
-	return c.extraProperties
-}
-
-func (c *ChatCompletionResponseUsage) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
-	}
-	c.explicitFields.Or(c.explicitFields, field)
-}
-
-// SetPromptTokens sets the PromptTokens field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseUsage) SetPromptTokens(promptTokens *int) {
-	c.PromptTokens = promptTokens
-	c.require(chatCompletionResponseUsageFieldPromptTokens)
-}
-
-// SetCompletionTokens sets the CompletionTokens field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseUsage) SetCompletionTokens(completionTokens *int) {
-	c.CompletionTokens = completionTokens
-	c.require(chatCompletionResponseUsageFieldCompletionTokens)
-}
-
-// SetTotalTokens sets the TotalTokens field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatCompletionResponseUsage) SetTotalTokens(totalTokens *int) {
-	c.TotalTokens = totalTokens
-	c.require(chatCompletionResponseUsageFieldTotalTokens)
-}
-
-func (c *ChatCompletionResponseUsage) UnmarshalJSON(data []byte) error {
-	type unmarshaler ChatCompletionResponseUsage
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ChatCompletionResponseUsage(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-	c.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ChatCompletionResponseUsage) MarshalJSON() ([]byte, error) {
-	type embed ChatCompletionResponseUsage
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*c),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (c *ChatCompletionResponseUsage) String() string {
-	if c == nil {
-		return "<nil>"
-	}
-	if len(c.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-var (
-	chatMessageFieldRole    = big.NewInt(1 << 0)
-	chatMessageFieldContent = big.NewInt(1 << 1)
-)
-
-type ChatMessage struct {
-	Role    *ChatMessageRole `json:"role,omitempty" url:"role,omitempty"`
-	Content *string          `json:"content,omitempty" url:"content,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (c *ChatMessage) GetRole() *ChatMessageRole {
-	if c == nil {
-		return nil
-	}
-	return c.Role
-}
-
-func (c *ChatMessage) GetContent() *string {
-	if c == nil {
-		return nil
-	}
-	return c.Content
-}
-
-func (c *ChatMessage) GetExtraProperties() map[string]interface{} {
-	if c == nil {
-		return nil
-	}
-	return c.extraProperties
-}
-
-func (c *ChatMessage) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
-	}
-	c.explicitFields.Or(c.explicitFields, field)
-}
-
-// SetRole sets the Role field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatMessage) SetRole(role *ChatMessageRole) {
-	c.Role = role
-	c.require(chatMessageFieldRole)
-}
-
-// SetContent sets the Content field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (c *ChatMessage) SetContent(content *string) {
-	c.Content = content
-	c.require(chatMessageFieldContent)
-}
-
-func (c *ChatMessage) UnmarshalJSON(data []byte) error {
-	type unmarshaler ChatMessage
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ChatMessage(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *c)
-	if err != nil {
-		return err
-	}
-	c.extraProperties = extraProperties
-	c.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ChatMessage) MarshalJSON() ([]byte, error) {
-	type embed ChatMessage
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*c),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (c *ChatMessage) String() string {
-	if c == nil {
-		return "<nil>"
-	}
-	if len(c.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ChatMessageRole string
-
-const (
-	ChatMessageRoleSystem    ChatMessageRole = "system"
-	ChatMessageRoleUser      ChatMessageRole = "user"
-	ChatMessageRoleAssistant ChatMessageRole = "assistant"
-)
-
-func NewChatMessageRoleFromString(s string) (ChatMessageRole, error) {
-	switch s {
-	case "system":
-		return ChatMessageRoleSystem, nil
-	case "user":
-		return ChatMessageRoleUser, nil
-	case "assistant":
-		return ChatMessageRoleAssistant, nil
-	}
-	var t ChatMessageRole
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c ChatMessageRole) Ptr() *ChatMessageRole {
-	return &c
-}
-
-var (
 	getChatCompletionResponseFieldData = big.NewInt(1 << 0)
 )
 
@@ -1993,4 +2493,88 @@ func (l *ListChatCompletionsResponse) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", l)
+}
+
+var (
+	scrubCompletionResponseFieldData = big.NewInt(1 << 0)
+)
+
+type ScrubCompletionResponse struct {
+	Data *CompletionRedactResponse `json:"data,omitempty" url:"data,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *ScrubCompletionResponse) GetData() *CompletionRedactResponse {
+	if s == nil {
+		return nil
+	}
+	return s.Data
+}
+
+func (s *ScrubCompletionResponse) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *ScrubCompletionResponse) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *ScrubCompletionResponse) SetData(data *CompletionRedactResponse) {
+	s.Data = data
+	s.require(scrubCompletionResponseFieldData)
+}
+
+func (s *ScrubCompletionResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ScrubCompletionResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ScrubCompletionResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ScrubCompletionResponse) MarshalJSON() ([]byte, error) {
+	type embed ScrubCompletionResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *ScrubCompletionResponse) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }

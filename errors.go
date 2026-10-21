@@ -79,7 +79,7 @@ func (i *InternalServerError) Unwrap() error {
 	return i.APIError
 }
 
-// Not Found
+// Chat completion not found
 type NotFoundError struct {
 	*core.APIError
 	Body any

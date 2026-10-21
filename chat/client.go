@@ -38,7 +38,11 @@ func NewClient(options *core.RequestOptions) *Client {
 //
 // Example:
 //
-//	request := &apgsdkgo.ListChatCompletionsRequest{}
+//	request := &apgsdkgo.ListChatCompletionsRequest{
+//	    Traceparent: apgsdkgo.String(
+//	        "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+//	    ),
+//	}
 //	client.Chat.ListChatCompletions(
 //	    context.TODO(),
 //	    request,
@@ -64,9 +68,9 @@ func (c *Client) ListChatCompletions(
 // Example:
 //
 //	request := &apgsdkgo.ChatCompletionRequest{
-//	    Unknown: map[string]any{
-//	        "key": "value",
-//	    },
+//	    Traceparent: apgsdkgo.String(
+//	        "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+//	    ),
 //	}
 //	client.Chat.CreateChatCompletion(
 //	    context.TODO(),
@@ -189,6 +193,60 @@ func (c *Client) ShareCompletion(
 	opts ...option.RequestOption,
 ) (*apgsdkgo.SuccessResponse, error) {
 	response, err := c.WithRawResponse.ShareCompletion(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Replaces this chat completion's message-adjacent text with a placeholder. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows.
+//
+// Example:
+//
+//	request := &apgsdkgo.ScrubCompletionRequest{
+//	    ID: "id",
+//	}
+//	client.Chat.ScrubCompletion(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ScrubCompletion(
+	ctx context.Context,
+	request *apgsdkgo.ScrubCompletionRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.ScrubCompletionResponse, error) {
+	response, err := c.WithRawResponse.ScrubCompletion(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Redacts detected personal data in this chat completion's message-adjacent text with regex, then an optional hosted redaction service when the Agent has that option on. Conversation rows, identifiers, likes, flags, and analytics identity stay in place. Repeat calls finish leftover rows and skip text that is already redacted.
+//
+// Example:
+//
+//	request := &apgsdkgo.AnonymizeCompletionRequest{
+//	    ID: "id",
+//	}
+//	client.Chat.AnonymizeCompletion(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) AnonymizeCompletion(
+	ctx context.Context,
+	request *apgsdkgo.AnonymizeCompletionRequest,
+	opts ...option.RequestOption,
+) (*apgsdkgo.AnonymizeCompletionResponse, error) {
+	response, err := c.WithRawResponse.AnonymizeCompletion(
 		ctx,
 		request,
 		opts...,

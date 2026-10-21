@@ -11,6 +11,131 @@ import (
 )
 
 var (
+	chatMessageFieldRole    = big.NewInt(1 << 0)
+	chatMessageFieldContent = big.NewInt(1 << 1)
+)
+
+type ChatMessage struct {
+	Role    *ChatMessageRole `json:"role,omitempty" url:"role,omitempty"`
+	Content *string          `json:"content,omitempty" url:"content,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *ChatMessage) GetRole() *ChatMessageRole {
+	if c == nil {
+		return nil
+	}
+	return c.Role
+}
+
+func (c *ChatMessage) GetContent() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Content
+}
+
+func (c *ChatMessage) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *ChatMessage) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetRole sets the Role field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatMessage) SetRole(role *ChatMessageRole) {
+	c.Role = role
+	c.require(chatMessageFieldRole)
+}
+
+// SetContent sets the Content field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatMessage) SetContent(content *string) {
+	c.Content = content
+	c.require(chatMessageFieldContent)
+}
+
+func (c *ChatMessage) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatMessage
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ChatMessage(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatMessage) MarshalJSON() ([]byte, error) {
+	type embed ChatMessage
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *ChatMessage) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+type ChatMessageRole string
+
+const (
+	ChatMessageRoleSystem    ChatMessageRole = "system"
+	ChatMessageRoleUser      ChatMessageRole = "user"
+	ChatMessageRoleAssistant ChatMessageRole = "assistant"
+)
+
+func NewChatMessageRoleFromString(s string) (ChatMessageRole, error) {
+	switch s {
+	case "system":
+		return ChatMessageRoleSystem, nil
+	case "user":
+		return ChatMessageRoleUser, nil
+	case "assistant":
+		return ChatMessageRoleAssistant, nil
+	}
+	var t ChatMessageRole
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ChatMessageRole) Ptr() *ChatMessageRole {
+	return &c
+}
+
+var (
 	errorFieldSuccess = big.NewInt(1 << 0)
 	errorFieldErrors  = big.NewInt(1 << 1)
 )
@@ -426,7 +551,7 @@ func (w *WebhookCta) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
-// Result of an evaluation run for CTA/guardrail events.
+// Result of an evaluation run for CTA, guardrail, or automation events.
 var (
 	webhookEvaluationFieldScore   = big.NewInt(1 << 0)
 	webhookEvaluationFieldPassed  = big.NewInt(1 << 1)
@@ -678,24 +803,25 @@ func (w *WebhookEventInfo) String() string {
 type WebhookEventInfoKey string
 
 const (
-	WebhookEventInfoKeyPromptSubmit     WebhookEventInfoKey = "prompt_submit"
-	WebhookEventInfoKeyResponseStart    WebhookEventInfoKey = "response_start"
-	WebhookEventInfoKeyResponseEnd      WebhookEventInfoKey = "response_end"
-	WebhookEventInfoKeyAutomationsEnd   WebhookEventInfoKey = "automations_end"
-	WebhookEventInfoKeyResponseLike     WebhookEventInfoKey = "response_like"
-	WebhookEventInfoKeyResponseFlag     WebhookEventInfoKey = "response_flag"
-	WebhookEventInfoKeyResponseFeedback WebhookEventInfoKey = "response_feedback"
-	WebhookEventInfoKeyReferralClick    WebhookEventInfoKey = "referral_click"
-	WebhookEventInfoKeyCtaTrigger       WebhookEventInfoKey = "cta_trigger"
-	WebhookEventInfoKeyCtaClick         WebhookEventInfoKey = "cta_click"
-	WebhookEventInfoKeyGuardrailTrigger WebhookEventInfoKey = "guardrail_trigger"
-	WebhookEventInfoKeyAttributionClick WebhookEventInfoKey = "attribution_click"
-	WebhookEventInfoKeyFooterClick      WebhookEventInfoKey = "footer_click"
-	WebhookEventInfoKeyNewUser          WebhookEventInfoKey = "new_user"
-	WebhookEventInfoKeyNewDevice        WebhookEventInfoKey = "new_device"
-	WebhookEventInfoKeyNewSession       WebhookEventInfoKey = "new_session"
-	WebhookEventInfoKeyNewConversation  WebhookEventInfoKey = "new_conversation"
-	WebhookEventInfoKeyError            WebhookEventInfoKey = "error"
+	WebhookEventInfoKeyPromptSubmit      WebhookEventInfoKey = "prompt_submit"
+	WebhookEventInfoKeyResponseStart     WebhookEventInfoKey = "response_start"
+	WebhookEventInfoKeyResponseEnd       WebhookEventInfoKey = "response_end"
+	WebhookEventInfoKeyAutomationTrigger WebhookEventInfoKey = "automation_trigger"
+	WebhookEventInfoKeyAutomationsEnd    WebhookEventInfoKey = "automations_end"
+	WebhookEventInfoKeyResponseLike      WebhookEventInfoKey = "response_like"
+	WebhookEventInfoKeyResponseFlag      WebhookEventInfoKey = "response_flag"
+	WebhookEventInfoKeyResponseFeedback  WebhookEventInfoKey = "response_feedback"
+	WebhookEventInfoKeyReferralClick     WebhookEventInfoKey = "referral_click"
+	WebhookEventInfoKeyCtaTrigger        WebhookEventInfoKey = "cta_trigger"
+	WebhookEventInfoKeyCtaClick          WebhookEventInfoKey = "cta_click"
+	WebhookEventInfoKeyGuardrailTrigger  WebhookEventInfoKey = "guardrail_trigger"
+	WebhookEventInfoKeyAttributionClick  WebhookEventInfoKey = "attribution_click"
+	WebhookEventInfoKeyFooterClick       WebhookEventInfoKey = "footer_click"
+	WebhookEventInfoKeyNewUser           WebhookEventInfoKey = "new_user"
+	WebhookEventInfoKeyNewDevice         WebhookEventInfoKey = "new_device"
+	WebhookEventInfoKeyNewSession        WebhookEventInfoKey = "new_session"
+	WebhookEventInfoKeyNewConversation   WebhookEventInfoKey = "new_conversation"
+	WebhookEventInfoKeyError             WebhookEventInfoKey = "error"
 )
 
 func NewWebhookEventInfoKeyFromString(s string) (WebhookEventInfoKey, error) {
@@ -706,6 +832,8 @@ func NewWebhookEventInfoKeyFromString(s string) (WebhookEventInfoKey, error) {
 		return WebhookEventInfoKeyResponseStart, nil
 	case "response_end":
 		return WebhookEventInfoKeyResponseEnd, nil
+	case "automation_trigger":
+		return WebhookEventInfoKeyAutomationTrigger, nil
 	case "automations_end":
 		return WebhookEventInfoKeyAutomationsEnd, nil
 	case "response_like":
@@ -946,7 +1074,7 @@ func (w *WebhookNotificationRef) String() string {
 	return fmt.Sprintf("%#v", w)
 }
 
-// Canonical JSON body POSTed to a configured webhook URL. `notification`, `event`, and `agent` are always present; the remaining sections appear only when relevant to the event. Treat the payload as additive and ignore unrecognised fields.
+// Canonical JSON body POSTed to a configured webhook URL. `notification`, `event`, and `agent` are always present; `trace` is present when the event ran inside an instrumented API request. The remaining sections appear only when relevant to the event. Treat the payload as additive and ignore unrecognised fields.
 var (
 	webhookPayloadFieldNotification = big.NewInt(1 << 0)
 	webhookPayloadFieldEvent        = big.NewInt(1 << 1)
@@ -956,8 +1084,10 @@ var (
 	webhookPayloadFieldPlatform     = big.NewInt(1 << 5)
 	webhookPayloadFieldCta          = big.NewInt(1 << 6)
 	webhookPayloadFieldGuardrail    = big.NewInt(1 << 7)
-	webhookPayloadFieldEvaluator    = big.NewInt(1 << 8)
-	webhookPayloadFieldEvaluation   = big.NewInt(1 << 9)
+	webhookPayloadFieldAutomation   = big.NewInt(1 << 8)
+	webhookPayloadFieldEvaluator    = big.NewInt(1 << 9)
+	webhookPayloadFieldEvaluation   = big.NewInt(1 << 10)
+	webhookPayloadFieldTrace        = big.NewInt(1 << 11)
 )
 
 type WebhookPayload struct {
@@ -974,9 +1104,13 @@ type WebhookPayload struct {
 	Cta *WebhookCta `json:"cta,omitempty" url:"cta,omitempty"`
 	// Present for guardrail_trigger events.
 	Guardrail *WebhookNamedRef `json:"guardrail,omitempty" url:"guardrail,omitempty"`
-	// Present for CTA/guardrail events that ran an evaluation.
+	// Present for automation_trigger events.
+	Automation *WebhookNamedRef `json:"automation,omitempty" url:"automation,omitempty"`
+	// Present for CTA, guardrail, or automation events that ran an evaluation.
 	Evaluator  *WebhookNamedRef   `json:"evaluator,omitempty" url:"evaluator,omitempty"`
 	Evaluation *WebhookEvaluation `json:"evaluation,omitempty" url:"evaluation,omitempty"`
+	// OpenTelemetry context for the API request that produced this event. Present when the Agent created or continued a W3C trace.
+	Trace *WebhookPayloadTrace `json:"trace,omitempty" url:"trace,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1041,6 +1175,13 @@ func (w *WebhookPayload) GetGuardrail() *WebhookNamedRef {
 	return w.Guardrail
 }
 
+func (w *WebhookPayload) GetAutomation() *WebhookNamedRef {
+	if w == nil {
+		return nil
+	}
+	return w.Automation
+}
+
 func (w *WebhookPayload) GetEvaluator() *WebhookNamedRef {
 	if w == nil {
 		return nil
@@ -1053,6 +1194,13 @@ func (w *WebhookPayload) GetEvaluation() *WebhookEvaluation {
 		return nil
 	}
 	return w.Evaluation
+}
+
+func (w *WebhookPayload) GetTrace() *WebhookPayloadTrace {
+	if w == nil {
+		return nil
+	}
+	return w.Trace
 }
 
 func (w *WebhookPayload) GetExtraProperties() map[string]interface{} {
@@ -1125,6 +1273,13 @@ func (w *WebhookPayload) SetGuardrail(guardrail *WebhookNamedRef) {
 	w.require(webhookPayloadFieldGuardrail)
 }
 
+// SetAutomation sets the Automation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookPayload) SetAutomation(automation *WebhookNamedRef) {
+	w.Automation = automation
+	w.require(webhookPayloadFieldAutomation)
+}
+
 // SetEvaluator sets the Evaluator field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
 func (w *WebhookPayload) SetEvaluator(evaluator *WebhookNamedRef) {
@@ -1137,6 +1292,13 @@ func (w *WebhookPayload) SetEvaluator(evaluator *WebhookNamedRef) {
 func (w *WebhookPayload) SetEvaluation(evaluation *WebhookEvaluation) {
 	w.Evaluation = evaluation
 	w.require(webhookPayloadFieldEvaluation)
+}
+
+// SetTrace sets the Trace field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookPayload) SetTrace(trace *WebhookPayloadTrace) {
+	w.Trace = trace
+	w.require(webhookPayloadFieldTrace)
 }
 
 func (w *WebhookPayload) UnmarshalJSON(data []byte) error {
@@ -1167,6 +1329,109 @@ func (w *WebhookPayload) MarshalJSON() ([]byte, error) {
 }
 
 func (w *WebhookPayload) String() string {
+	if w == nil {
+		return "<nil>"
+	}
+	if len(w.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(w.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(w); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", w)
+}
+
+// OpenTelemetry context for the API request that produced this event. Present when the Agent created or continued a W3C trace.
+var (
+	webhookPayloadTraceFieldTraceID = big.NewInt(1 << 0)
+	webhookPayloadTraceFieldSpanID  = big.NewInt(1 << 1)
+)
+
+type WebhookPayloadTrace struct {
+	// 32-character hex trace id
+	TraceID *string `json:"trace_id,omitempty" url:"trace_id,omitempty"`
+	// 16-character hex span id
+	SpanID *string `json:"span_id,omitempty" url:"span_id,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (w *WebhookPayloadTrace) GetTraceID() *string {
+	if w == nil {
+		return nil
+	}
+	return w.TraceID
+}
+
+func (w *WebhookPayloadTrace) GetSpanID() *string {
+	if w == nil {
+		return nil
+	}
+	return w.SpanID
+}
+
+func (w *WebhookPayloadTrace) GetExtraProperties() map[string]interface{} {
+	if w == nil {
+		return nil
+	}
+	return w.extraProperties
+}
+
+func (w *WebhookPayloadTrace) require(field *big.Int) {
+	if w.explicitFields == nil {
+		w.explicitFields = big.NewInt(0)
+	}
+	w.explicitFields.Or(w.explicitFields, field)
+}
+
+// SetTraceID sets the TraceID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookPayloadTrace) SetTraceID(traceID *string) {
+	w.TraceID = traceID
+	w.require(webhookPayloadTraceFieldTraceID)
+}
+
+// SetSpanID sets the SpanID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (w *WebhookPayloadTrace) SetSpanID(spanID *string) {
+	w.SpanID = spanID
+	w.require(webhookPayloadTraceFieldSpanID)
+}
+
+func (w *WebhookPayloadTrace) UnmarshalJSON(data []byte) error {
+	type unmarshaler WebhookPayloadTrace
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*w = WebhookPayloadTrace(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *w)
+	if err != nil {
+		return err
+	}
+	w.extraProperties = extraProperties
+	w.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (w *WebhookPayloadTrace) MarshalJSON() ([]byte, error) {
+	type embed WebhookPayloadTrace
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*w),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, w.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (w *WebhookPayloadTrace) String() string {
 	if w == nil {
 		return "<nil>"
 	}

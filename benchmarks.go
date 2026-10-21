@@ -348,8 +348,8 @@ func (b *BenchmarkRunRequest) MarshalJSON() ([]byte, error) {
 
 // Content to evaluate. Required when `source_id` is supplied.
 type BenchmarkRunRequestContent struct {
-	StringOptional      *string
-	UnknownListOptional []any
+	StringOptional                                *string
+	BenchmarkRunRequestContentOneItemListOptional []*BenchmarkRunRequestContentOneItem
 
 	typ string
 }
@@ -361,11 +361,11 @@ func (b *BenchmarkRunRequestContent) GetStringOptional() *string {
 	return b.StringOptional
 }
 
-func (b *BenchmarkRunRequestContent) GetUnknownListOptional() []any {
+func (b *BenchmarkRunRequestContent) GetBenchmarkRunRequestContentOneItemListOptional() []*BenchmarkRunRequestContentOneItem {
 	if b == nil {
 		return nil
 	}
-	return b.UnknownListOptional
+	return b.BenchmarkRunRequestContentOneItemListOptional
 }
 
 func (b *BenchmarkRunRequestContent) UnmarshalJSON(data []byte) error {
@@ -375,10 +375,10 @@ func (b *BenchmarkRunRequestContent) UnmarshalJSON(data []byte) error {
 		b.StringOptional = valueStringOptional
 		return nil
 	}
-	var valueUnknownListOptional []any
-	if err := json.Unmarshal(data, &valueUnknownListOptional); err == nil {
-		b.typ = "UnknownListOptional"
-		b.UnknownListOptional = valueUnknownListOptional
+	var valueBenchmarkRunRequestContentOneItemListOptional []*BenchmarkRunRequestContentOneItem
+	if err := json.Unmarshal(data, &valueBenchmarkRunRequestContentOneItemListOptional); err == nil {
+		b.typ = "BenchmarkRunRequestContentOneItemListOptional"
+		b.BenchmarkRunRequestContentOneItemListOptional = valueBenchmarkRunRequestContentOneItemListOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, b)
@@ -388,23 +388,85 @@ func (b BenchmarkRunRequestContent) MarshalJSON() ([]byte, error) {
 	if b.typ == "StringOptional" || b.StringOptional != nil {
 		return json.Marshal(b.StringOptional)
 	}
-	if b.typ == "UnknownListOptional" || b.UnknownListOptional != nil {
-		return json.Marshal(b.UnknownListOptional)
+	if b.typ == "BenchmarkRunRequestContentOneItemListOptional" || b.BenchmarkRunRequestContentOneItemListOptional != nil {
+		return json.Marshal(b.BenchmarkRunRequestContentOneItemListOptional)
 	}
 	return nil, fmt.Errorf("type %T does not include a non-empty union type", b)
 }
 
 type BenchmarkRunRequestContentVisitor interface {
 	VisitStringOptional(*string) error
-	VisitUnknownListOptional([]any) error
+	VisitBenchmarkRunRequestContentOneItemListOptional([]*BenchmarkRunRequestContentOneItem) error
 }
 
 func (b *BenchmarkRunRequestContent) Accept(visitor BenchmarkRunRequestContentVisitor) error {
 	if b.typ == "StringOptional" || b.StringOptional != nil {
 		return visitor.VisitStringOptional(b.StringOptional)
 	}
-	if b.typ == "UnknownListOptional" || b.UnknownListOptional != nil {
-		return visitor.VisitUnknownListOptional(b.UnknownListOptional)
+	if b.typ == "BenchmarkRunRequestContentOneItemListOptional" || b.BenchmarkRunRequestContentOneItemListOptional != nil {
+		return visitor.VisitBenchmarkRunRequestContentOneItemListOptional(b.BenchmarkRunRequestContentOneItemListOptional)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", b)
+}
+
+type BenchmarkRunRequestContentOneItem struct {
+	String      string
+	ChatMessage *ChatMessage
+
+	typ string
+}
+
+func (b *BenchmarkRunRequestContentOneItem) GetString() string {
+	if b == nil {
+		return ""
+	}
+	return b.String
+}
+
+func (b *BenchmarkRunRequestContentOneItem) GetChatMessage() *ChatMessage {
+	if b == nil {
+		return nil
+	}
+	return b.ChatMessage
+}
+
+func (b *BenchmarkRunRequestContentOneItem) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		b.typ = "String"
+		b.String = valueString
+		return nil
+	}
+	valueChatMessage := new(ChatMessage)
+	if err := json.Unmarshal(data, &valueChatMessage); err == nil {
+		b.typ = "ChatMessage"
+		b.ChatMessage = valueChatMessage
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, b)
+}
+
+func (b BenchmarkRunRequestContentOneItem) MarshalJSON() ([]byte, error) {
+	if b.typ == "String" || b.String != "" {
+		return json.Marshal(b.String)
+	}
+	if b.typ == "ChatMessage" || b.ChatMessage != nil {
+		return json.Marshal(b.ChatMessage)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", b)
+}
+
+type BenchmarkRunRequestContentOneItemVisitor interface {
+	VisitString(string) error
+	VisitChatMessage(*ChatMessage) error
+}
+
+func (b *BenchmarkRunRequestContentOneItem) Accept(visitor BenchmarkRunRequestContentOneItemVisitor) error {
+	if b.typ == "String" || b.String != "" {
+		return visitor.VisitString(b.String)
+	}
+	if b.typ == "ChatMessage" || b.ChatMessage != nil {
+		return visitor.VisitChatMessage(b.ChatMessage)
 	}
 	return fmt.Errorf("type %T does not include a non-empty union type", b)
 }

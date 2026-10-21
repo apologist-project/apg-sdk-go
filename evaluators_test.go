@@ -1146,28 +1146,28 @@ func TestGettersEvaluatorRequestContent(t *testing.T) {
 		_ = obj.GetString() // Should return zero value
 	})
 
-	t.Run("GetUnknownList", func(t *testing.T) {
+	t.Run("GetEvaluatorRequestContentOneItemList", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &EvaluatorRequestContent{}
-		var expected []any
-		obj.UnknownList = expected
+		var expected []*EvaluatorRequestContentOneItem
+		obj.EvaluatorRequestContentOneItemList = expected
 
 		// Act & Assert
-		assert.Equal(t, expected, obj.GetUnknownList(), "getter should return the property value")
+		assert.Equal(t, expected, obj.GetEvaluatorRequestContentOneItemList(), "getter should return the property value")
 	})
 
-	t.Run("GetUnknownList_NilValue", func(t *testing.T) {
+	t.Run("GetEvaluatorRequestContentOneItemList_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &EvaluatorRequestContent{}
-		obj.UnknownList = nil
+		obj.EvaluatorRequestContentOneItemList = nil
 
 		// Act & Assert
-		assert.Nil(t, obj.GetUnknownList(), "getter should return nil when property is nil")
+		assert.Nil(t, obj.GetEvaluatorRequestContentOneItemList(), "getter should return nil when property is nil")
 	})
 
-	t.Run("GetUnknownList_NilReceiver", func(t *testing.T) {
+	t.Run("GetEvaluatorRequestContentOneItemList_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *EvaluatorRequestContent
 		// Should not panic - getters should handle nil receiver gracefully
@@ -1176,7 +1176,66 @@ func TestGettersEvaluatorRequestContent(t *testing.T) {
 				t.Errorf("Getter panicked on nil receiver: %v", r)
 			}
 		}()
-		_ = obj.GetUnknownList() // Should return zero value
+		_ = obj.GetEvaluatorRequestContentOneItemList() // Should return zero value
+	})
+
+}
+
+func TestGettersEvaluatorRequestContentOneItem(t *testing.T) {
+	t.Run("GetString", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &EvaluatorRequestContentOneItem{}
+		var expected string
+		obj.String = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetString(), "getter should return the property value")
+	})
+
+	t.Run("GetString_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *EvaluatorRequestContentOneItem
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetString() // Should return zero value
+	})
+
+	t.Run("GetChatMessage", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &EvaluatorRequestContentOneItem{}
+		var expected *ChatMessage
+		obj.ChatMessage = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetChatMessage(), "getter should return the property value")
+	})
+
+	t.Run("GetChatMessage_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &EvaluatorRequestContentOneItem{}
+		obj.ChatMessage = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetChatMessage(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetChatMessage_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *EvaluatorRequestContentOneItem
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetChatMessage() // Should return zero value
 	})
 
 }

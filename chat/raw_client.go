@@ -55,6 +55,16 @@ func (r *RawClient) ListChatCompletions(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	if request.Traceparent != nil {
+		headers.Add("traceparent", *request.Traceparent)
+	}
+	if request.Tracestate != nil {
+		headers.Add("tracestate", *request.Tracestate)
+	}
+	if request.Baggage != nil {
+		headers.Add("baggage", *request.Baggage)
+	}
+
 	var response *apgsdkgo.ListChatCompletionsResponse
 	raw, err := r.caller.Call(
 		ctx,
@@ -97,6 +107,16 @@ func (r *RawClient) CreateChatCompletion(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	if request.Traceparent != nil {
+		headers.Add("traceparent", *request.Traceparent)
+	}
+	if request.Tracestate != nil {
+		headers.Add("tracestate", *request.Tracestate)
+	}
+	if request.Baggage != nil {
+		headers.Add("baggage", *request.Baggage)
+	}
+	headers.Add("Content-Type", "application/json")
 	var response *apgsdkgo.ChatCompletionResponse
 	raw, err := r.caller.Call(
 		ctx,
@@ -306,6 +326,96 @@ func (r *RawClient) ShareCompletion(
 		return nil, err
 	}
 	return &core.Response[*apgsdkgo.SuccessResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) ScrubCompletion(
+	ctx context.Context,
+	request *apgsdkgo.ScrubCompletionRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.ScrubCompletionResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/chat/completions/%v/scrub",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.ScrubCompletionResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.ScrubCompletionResponse]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) AnonymizeCompletion(
+	ctx context.Context,
+	request *apgsdkgo.AnonymizeCompletionRequest,
+	opts ...option.RequestOption,
+) (*core.Response[*apgsdkgo.AnonymizeCompletionResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://your-agent-domain.com/api/v1",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/chat/completions/%v/anonymize",
+		request.ID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	var response *apgsdkgo.AnonymizeCompletionResponse
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			DisableRetries:  options.DisableRetries,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(apgsdkgo.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*apgsdkgo.AnonymizeCompletionResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

@@ -114,63 +114,169 @@ func (g *GetLineChannelStatusRequest) SetID(id string) {
 }
 
 var (
-	receiveChatwootWebhookRequestFieldChatwootSignature = big.NewInt(1 << 0)
-	receiveChatwootWebhookRequestFieldChatwootTimestamp = big.NewInt(1 << 1)
-	receiveChatwootWebhookRequestFieldID                = big.NewInt(1 << 2)
+	chatwootWebhookPayloadFieldChatwootSignature = big.NewInt(1 << 0)
+	chatwootWebhookPayloadFieldChatwootTimestamp = big.NewInt(1 << 1)
+	chatwootWebhookPayloadFieldChannelID         = big.NewInt(1 << 2)
+	chatwootWebhookPayloadFieldEvent             = big.NewInt(1 << 3)
+	chatwootWebhookPayloadFieldID                = big.NewInt(1 << 4)
+	chatwootWebhookPayloadFieldContent           = big.NewInt(1 << 5)
+	chatwootWebhookPayloadFieldMessageType       = big.NewInt(1 << 6)
+	chatwootWebhookPayloadFieldPrivate           = big.NewInt(1 << 7)
+	chatwootWebhookPayloadFieldAccount           = big.NewInt(1 << 8)
+	chatwootWebhookPayloadFieldSender            = big.NewInt(1 << 9)
+	chatwootWebhookPayloadFieldConversation      = big.NewInt(1 << 10)
+	chatwootWebhookPayloadFieldStatus            = big.NewInt(1 << 11)
+	chatwootWebhookPayloadFieldMeta              = big.NewInt(1 << 12)
 )
 
-type ReceiveChatwootWebhookRequest struct {
+type ChatwootWebhookPayload struct {
 	// `sha256=` plus hex HMAC-SHA256 of `{timestamp}.{rawBody}` keyed with the Agent Bot webhook secret. Required when the webhook URL does not include an api_key, and whenever a webhook secret is configured.
 	ChatwootSignature *string `json:"-" url:"-"`
 	// Unix timestamp used in the HMAC payload.
 	ChatwootTimestamp *string `json:"-" url:"-"`
 	// The channel id
-	ID   string         `json:"-" url:"-"`
-	Body map[string]any `json:"-" url:"-"`
+	ChannelID string `json:"-" url:"-"`
+	// Chatwoot event name. Incoming visitor messages use `message_created`. Staff takeover and assignment use conversation events such as `conversation_opened`, `conversation_status_changed`, and `conversation_updated`.
+	Event *string `json:"event,omitempty" url:"-"`
+	// Message id on `message_*` events. Conversation display id on `conversation_*` events.
+	ID *int `json:"id,omitempty" url:"-"`
+	// Message text. Present on message events. Empty or private notes are ignored.
+	Content *string `json:"content,omitempty" url:"-"`
+	// Incoming visitor messages are `incoming` (or `0`). Staff replies are `outgoing` (or `1`).
+	MessageType *string `json:"message_type,omitempty" url:"-"`
+	// When true, the Agent ignores the message (Chatwoot private note).
+	Private *bool                          `json:"private,omitempty" url:"-"`
+	Account *ChatwootWebhookPayloadAccount `json:"account,omitempty" url:"-"`
+	// Present on message events.
+	Sender *ChatwootWebhookPayloadSender `json:"sender,omitempty" url:"-"`
+	// Nested on message events. Conversation events send `id`, `status`, and `meta` at the top level instead.
+	Conversation *ChatwootWebhookPayloadConversation `json:"conversation,omitempty" url:"-"`
+	// Top-level conversation status on conversation events.
+	Status *string `json:"status,omitempty" url:"-"`
+	// Top-level conversation meta on conversation events.
+	Meta *ChatwootConversationMeta `json:"meta,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
 }
 
-func (r *ReceiveChatwootWebhookRequest) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+func (c *ChatwootWebhookPayload) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	c.explicitFields.Or(c.explicitFields, field)
 }
 
 // SetChatwootSignature sets the ChatwootSignature field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (r *ReceiveChatwootWebhookRequest) SetChatwootSignature(chatwootSignature *string) {
-	r.ChatwootSignature = chatwootSignature
-	r.require(receiveChatwootWebhookRequestFieldChatwootSignature)
+func (c *ChatwootWebhookPayload) SetChatwootSignature(chatwootSignature *string) {
+	c.ChatwootSignature = chatwootSignature
+	c.require(chatwootWebhookPayloadFieldChatwootSignature)
 }
 
 // SetChatwootTimestamp sets the ChatwootTimestamp field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (r *ReceiveChatwootWebhookRequest) SetChatwootTimestamp(chatwootTimestamp *string) {
-	r.ChatwootTimestamp = chatwootTimestamp
-	r.require(receiveChatwootWebhookRequestFieldChatwootTimestamp)
+func (c *ChatwootWebhookPayload) SetChatwootTimestamp(chatwootTimestamp *string) {
+	c.ChatwootTimestamp = chatwootTimestamp
+	c.require(chatwootWebhookPayloadFieldChatwootTimestamp)
+}
+
+// SetChannelID sets the ChannelID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetChannelID(channelID string) {
+	c.ChannelID = channelID
+	c.require(chatwootWebhookPayloadFieldChannelID)
+}
+
+// SetEvent sets the Event field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetEvent(event *string) {
+	c.Event = event
+	c.require(chatwootWebhookPayloadFieldEvent)
 }
 
 // SetID sets the ID field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (r *ReceiveChatwootWebhookRequest) SetID(id string) {
-	r.ID = id
-	r.require(receiveChatwootWebhookRequestFieldID)
+func (c *ChatwootWebhookPayload) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootWebhookPayloadFieldID)
 }
 
-func (r *ReceiveChatwootWebhookRequest) UnmarshalJSON(data []byte) error {
-	var body map[string]any
+// SetContent sets the Content field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetContent(content *string) {
+	c.Content = content
+	c.require(chatwootWebhookPayloadFieldContent)
+}
+
+// SetMessageType sets the MessageType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetMessageType(messageType *string) {
+	c.MessageType = messageType
+	c.require(chatwootWebhookPayloadFieldMessageType)
+}
+
+// SetPrivate sets the Private field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetPrivate(private *bool) {
+	c.Private = private
+	c.require(chatwootWebhookPayloadFieldPrivate)
+}
+
+// SetAccount sets the Account field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetAccount(account *ChatwootWebhookPayloadAccount) {
+	c.Account = account
+	c.require(chatwootWebhookPayloadFieldAccount)
+}
+
+// SetSender sets the Sender field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetSender(sender *ChatwootWebhookPayloadSender) {
+	c.Sender = sender
+	c.require(chatwootWebhookPayloadFieldSender)
+}
+
+// SetConversation sets the Conversation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetConversation(conversation *ChatwootWebhookPayloadConversation) {
+	c.Conversation = conversation
+	c.require(chatwootWebhookPayloadFieldConversation)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetStatus(status *string) {
+	c.Status = status
+	c.require(chatwootWebhookPayloadFieldStatus)
+}
+
+// SetMeta sets the Meta field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayload) SetMeta(meta *ChatwootConversationMeta) {
+	c.Meta = meta
+	c.require(chatwootWebhookPayloadFieldMeta)
+}
+
+func (c *ChatwootWebhookPayload) UnmarshalJSON(data []byte) error {
+	type unmarshaler ChatwootWebhookPayload
+	var body unmarshaler
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
-	r.Body = body
+	*c = ChatwootWebhookPayload(body)
 	return nil
 }
 
-func (r *ReceiveChatwootWebhookRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal(r.Body)
+func (c *ChatwootWebhookPayload) MarshalJSON() ([]byte, error) {
+	type embed ChatwootWebhookPayload
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (
@@ -434,7 +540,7 @@ var (
 )
 
 type ReceiveWhatsAppMessageRequest struct {
-	// Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured and the webhook URL does not include an api_key.
+	// Meta `sha256=<hex>` HMAC of the raw body keyed with the WhatsApp App Secret. Required when the channel has an App Secret configured.
 	HubSignature256 *string `json:"-" url:"-"`
 	// The channel id
 	ID   string         `json:"-" url:"-"`
@@ -476,6 +582,659 @@ func (r *ReceiveWhatsAppMessageRequest) UnmarshalJSON(data []byte) error {
 
 func (r *ReceiveWhatsAppMessageRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.Body)
+}
+
+var (
+	chatwootConversationMetaFieldAssigneeType = big.NewInt(1 << 0)
+	chatwootConversationMetaFieldSender       = big.NewInt(1 << 1)
+)
+
+type ChatwootConversationMeta struct {
+	// `AgentBot` while the Agent owns the thread. `User` after staff take over.
+	AssigneeType *string                         `json:"assignee_type,omitempty" url:"assignee_type,omitempty"`
+	Sender       *ChatwootConversationMetaSender `json:"sender,omitempty" url:"sender,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootConversationMeta) GetAssigneeType() *string {
+	if c == nil {
+		return nil
+	}
+	return c.AssigneeType
+}
+
+func (c *ChatwootConversationMeta) GetSender() *ChatwootConversationMetaSender {
+	if c == nil {
+		return nil
+	}
+	return c.Sender
+}
+
+func (c *ChatwootConversationMeta) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootConversationMeta) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetAssigneeType sets the AssigneeType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootConversationMeta) SetAssigneeType(assigneeType *string) {
+	c.AssigneeType = assigneeType
+	c.require(chatwootConversationMetaFieldAssigneeType)
+}
+
+// SetSender sets the Sender field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootConversationMeta) SetSender(sender *ChatwootConversationMetaSender) {
+	c.Sender = sender
+	c.require(chatwootConversationMetaFieldSender)
+}
+
+func (c *ChatwootConversationMeta) UnmarshalJSON(data []byte) error {
+	type embed ChatwootConversationMeta
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootConversationMeta(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootConversationMeta) MarshalJSON() ([]byte, error) {
+	type embed ChatwootConversationMeta
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootConversationMeta) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	chatwootConversationMetaSenderFieldID   = big.NewInt(1 << 0)
+	chatwootConversationMetaSenderFieldName = big.NewInt(1 << 1)
+)
+
+type ChatwootConversationMetaSender struct {
+	ID   *int    `json:"id,omitempty" url:"id,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootConversationMetaSender) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ChatwootConversationMetaSender) GetName() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Name
+}
+
+func (c *ChatwootConversationMetaSender) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootConversationMetaSender) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootConversationMetaSender) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootConversationMetaSenderFieldID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootConversationMetaSender) SetName(name *string) {
+	c.Name = name
+	c.require(chatwootConversationMetaSenderFieldName)
+}
+
+func (c *ChatwootConversationMetaSender) UnmarshalJSON(data []byte) error {
+	type embed ChatwootConversationMetaSender
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootConversationMetaSender(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootConversationMetaSender) MarshalJSON() ([]byte, error) {
+	type embed ChatwootConversationMetaSender
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootConversationMetaSender) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	chatwootWebhookPayloadAccountFieldID = big.NewInt(1 << 0)
+)
+
+type ChatwootWebhookPayloadAccount struct {
+	// Must match the channel Account ID, or the request is rejected.
+	ID *int `json:"id,omitempty" url:"id,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootWebhookPayloadAccount) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ChatwootWebhookPayloadAccount) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootWebhookPayloadAccount) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadAccount) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootWebhookPayloadAccountFieldID)
+}
+
+func (c *ChatwootWebhookPayloadAccount) UnmarshalJSON(data []byte) error {
+	type embed ChatwootWebhookPayloadAccount
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootWebhookPayloadAccount(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootWebhookPayloadAccount) MarshalJSON() ([]byte, error) {
+	type embed ChatwootWebhookPayloadAccount
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootWebhookPayloadAccount) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Nested on message events. Conversation events send `id`, `status`, and `meta` at the top level instead.
+var (
+	chatwootWebhookPayloadConversationFieldID      = big.NewInt(1 << 0)
+	chatwootWebhookPayloadConversationFieldStatus  = big.NewInt(1 << 1)
+	chatwootWebhookPayloadConversationFieldAccount = big.NewInt(1 << 2)
+	chatwootWebhookPayloadConversationFieldMeta    = big.NewInt(1 << 3)
+)
+
+type ChatwootWebhookPayloadConversation struct {
+	// Conversation display id.
+	ID *int `json:"id,omitempty" url:"id,omitempty"`
+	// `pending`, `open`, `resolved`, or `snoozed`.
+	Status  *string                                    `json:"status,omitempty" url:"status,omitempty"`
+	Account *ChatwootWebhookPayloadConversationAccount `json:"account,omitempty" url:"account,omitempty"`
+	Meta    *ChatwootConversationMeta                  `json:"meta,omitempty" url:"meta,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootWebhookPayloadConversation) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ChatwootWebhookPayloadConversation) GetStatus() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Status
+}
+
+func (c *ChatwootWebhookPayloadConversation) GetAccount() *ChatwootWebhookPayloadConversationAccount {
+	if c == nil {
+		return nil
+	}
+	return c.Account
+}
+
+func (c *ChatwootWebhookPayloadConversation) GetMeta() *ChatwootConversationMeta {
+	if c == nil {
+		return nil
+	}
+	return c.Meta
+}
+
+func (c *ChatwootWebhookPayloadConversation) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootWebhookPayloadConversation) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadConversation) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootWebhookPayloadConversationFieldID)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadConversation) SetStatus(status *string) {
+	c.Status = status
+	c.require(chatwootWebhookPayloadConversationFieldStatus)
+}
+
+// SetAccount sets the Account field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadConversation) SetAccount(account *ChatwootWebhookPayloadConversationAccount) {
+	c.Account = account
+	c.require(chatwootWebhookPayloadConversationFieldAccount)
+}
+
+// SetMeta sets the Meta field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadConversation) SetMeta(meta *ChatwootConversationMeta) {
+	c.Meta = meta
+	c.require(chatwootWebhookPayloadConversationFieldMeta)
+}
+
+func (c *ChatwootWebhookPayloadConversation) UnmarshalJSON(data []byte) error {
+	type embed ChatwootWebhookPayloadConversation
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootWebhookPayloadConversation(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootWebhookPayloadConversation) MarshalJSON() ([]byte, error) {
+	type embed ChatwootWebhookPayloadConversation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootWebhookPayloadConversation) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	chatwootWebhookPayloadConversationAccountFieldID = big.NewInt(1 << 0)
+)
+
+type ChatwootWebhookPayloadConversationAccount struct {
+	ID *int `json:"id,omitempty" url:"id,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadConversationAccount) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootWebhookPayloadConversationAccountFieldID)
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) UnmarshalJSON(data []byte) error {
+	type embed ChatwootWebhookPayloadConversationAccount
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootWebhookPayloadConversationAccount(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) MarshalJSON() ([]byte, error) {
+	type embed ChatwootWebhookPayloadConversationAccount
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootWebhookPayloadConversationAccount) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+// Present on message events.
+var (
+	chatwootWebhookPayloadSenderFieldID   = big.NewInt(1 << 0)
+	chatwootWebhookPayloadSenderFieldName = big.NewInt(1 << 1)
+	chatwootWebhookPayloadSenderFieldType = big.NewInt(1 << 2)
+)
+
+type ChatwootWebhookPayloadSender struct {
+	ID   *int    `json:"id,omitempty" url:"id,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// `contact` for visitors, `user` for staff, `agent_bot` for this Agent. The Agent ignores its own outgoing messages.
+	Type *string `json:"type,omitempty" url:"type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (c *ChatwootWebhookPayloadSender) GetID() *int {
+	if c == nil {
+		return nil
+	}
+	return c.ID
+}
+
+func (c *ChatwootWebhookPayloadSender) GetName() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Name
+}
+
+func (c *ChatwootWebhookPayloadSender) GetType() *string {
+	if c == nil {
+		return nil
+	}
+	return c.Type
+}
+
+func (c *ChatwootWebhookPayloadSender) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.ExtraProperties
+}
+
+func (c *ChatwootWebhookPayloadSender) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetID sets the ID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadSender) SetID(id *int) {
+	c.ID = id
+	c.require(chatwootWebhookPayloadSenderFieldID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadSender) SetName(name *string) {
+	c.Name = name
+	c.require(chatwootWebhookPayloadSenderFieldName)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ChatwootWebhookPayloadSender) SetType(type_ *string) {
+	c.Type = type_
+	c.require(chatwootWebhookPayloadSenderFieldType)
+}
+
+func (c *ChatwootWebhookPayloadSender) UnmarshalJSON(data []byte) error {
+	type embed ChatwootWebhookPayloadSender
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = ChatwootWebhookPayloadSender(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.ExtraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ChatwootWebhookPayloadSender) MarshalJSON() ([]byte, error) {
+	type embed ChatwootWebhookPayloadSender
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, c.ExtraProperties)
+}
+
+func (c *ChatwootWebhookPayloadSender) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 var (

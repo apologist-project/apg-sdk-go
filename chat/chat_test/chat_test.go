@@ -88,7 +88,11 @@ func TestChatListChatCompletionsWithWireMock(
 		option.WithBaseURL(WireMockBaseURL),
 		option.WithAPIKey("test-value"),
 	)
-	request := &apgsdkgo.ListChatCompletionsRequest{}
+	request := &apgsdkgo.ListChatCompletionsRequest{
+		Traceparent: apgsdkgo.String(
+			"00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+		),
+	}
 	_, invocationErr := client.Chat.ListChatCompletions(
 		context.TODO(),
 		request,
@@ -113,9 +117,9 @@ func TestChatCreateChatCompletionWithWireMock(
 		option.WithAPIKey("test-value"),
 	)
 	request := &apgsdkgo.ChatCompletionRequest{
-		Unknown: map[string]any{
-			"key": "value",
-		},
+		Traceparent: apgsdkgo.String(
+			"00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+		),
 	}
 	_, invocationErr := client.Chat.CreateChatCompletion(
 		context.TODO(),
@@ -234,6 +238,58 @@ func TestChatShareCompletionWithWireMock(
 
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestChatShareCompletionWithWireMock", "POST", "/chat/completions/id/share", nil, 1)
+}
+
+func TestChatScrubCompletionWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &apgsdkgo.ScrubCompletionRequest{
+		ID: "id",
+	}
+	_, invocationErr := client.Chat.ScrubCompletion(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChatScrubCompletionWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChatScrubCompletionWithWireMock", "POST", "/chat/completions/id/scrub", nil, 1)
+}
+
+func TestChatAnonymizeCompletionWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewApologistAgentClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithAPIKey("test-value"),
+	)
+	request := &apgsdkgo.AnonymizeCompletionRequest{
+		ID: "id",
+	}
+	_, invocationErr := client.Chat.AnonymizeCompletion(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestChatAnonymizeCompletionWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestChatAnonymizeCompletionWithWireMock", "POST", "/chat/completions/id/anonymize", nil, 1)
 }
 
 func TestChatGetChatCompletionWithWireMock(

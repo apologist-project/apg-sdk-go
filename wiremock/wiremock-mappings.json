@@ -46,7 +46,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"id\": \"id\",\n  \"object\": \"object\",\n  \"created\": 1,\n  \"model\": \"model\",\n  \"choices\": [\n    {\n      \"index\": 1,\n      \"message\": {\n        \"role\": \"system\",\n        \"content\": \"content\"\n      },\n      \"logprobs\": {\n        \"logprobs\": {\n          \"key\": \"value\"\n        }\n      },\n      \"finish_reason\": \"finish_reason\"\n    },\n    {\n      \"index\": 1,\n      \"message\": {\n        \"role\": \"system\",\n        \"content\": \"content\"\n      },\n      \"logprobs\": {\n        \"logprobs\": {\n          \"key\": \"value\"\n        }\n      },\n      \"finish_reason\": \"finish_reason\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 1,\n    \"completion_tokens\": 1,\n    \"total_tokens\": 1\n  },\n  \"cached\": true\n}",
+        "body": "{\n  \"id\": \"id\",\n  \"object\": \"chat.completion\",\n  \"created\": 1,\n  \"model\": \"model\",\n  \"choices\": [\n    {\n      \"index\": 1,\n      \"logprobs\": {\n        \"key\": \"value\"\n      },\n      \"finish_reason\": \"finish_reason\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 1,\n    \"completion_tokens\": 1,\n    \"total_tokens\": 1\n  },\n  \"cached\": true\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -196,6 +196,78 @@
         }
       },
       "uuid": "f3ad85e6-1c2d-4f6e-9bbe-5c69f95dfc22",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "9b6e418f-7b3b-40a3-8c20-dc1da1277412",
+      "name": "Scrub Chat Completion - default",
+      "request": {
+        "urlPathTemplate": "/chat/completions/{id}/scrub",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"mode\": \"scrub\",\n    \"messages_redacted\": 1,\n    \"remaining\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "9b6e418f-7b3b-40a3-8c20-dc1da1277412",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "1febc65c-b7ce-47fc-b60c-8b008cc20ad1",
+      "name": "Anonymize Chat Completion - default",
+      "request": {
+        "urlPathTemplate": "/chat/completions/{id}/anonymize",
+        "method": "POST",
+        "headers": {
+          "x-api-key": {
+            "matches": ".+"
+          }
+        },
+        "pathParameters": {
+          "id": {
+            "equalTo": "id"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"data\": {\n    \"id\": \"id\",\n    \"mode\": \"scrub\",\n    \"messages_redacted\": 1,\n    \"remaining\": 1\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "1febc65c-b7ce-47fc-b60c-8b008cc20ad1",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -560,7 +632,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"ctas\": [\n    {\n      \"ctas\": {\n        \"key\": \"value\"\n      }\n    },\n    {\n      \"ctas\": {\n        \"key\": \"value\"\n      }\n    }\n  ]\n}",
+        "body": "{\n  \"ctas\": [\n    {\n      \"key\": \"value\"\n    }\n  ]\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -659,7 +731,7 @@
       },
       "response": {
         "status": 200,
-        "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"name\",\n      \"user_id\": 1,\n      \"team_id\": 1,\n      \"synced_at\": \"synced_at\"\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 1\n}",
+        "body": "{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"name\",\n      \"key\": \"key\",\n      \"user_id\": 1,\n      \"team_id\": 1,\n      \"synced_at\": \"synced_at\"\n    }\n  ],\n  \"total\": 1,\n  \"page\": 1,\n  \"per_page\": 1\n}",
         "headers": {
           "Content-Type": "application/json"
         }
@@ -750,8 +822,8 @@
       }
     },
     {
-      "id": "301bc787-4f0d-409a-b08b-0be5754f4bf2",
-      "name": "Scrub User - default",
+      "id": "38c75f24-5d76-479c-b6ca-d2dc221400ad",
+      "name": "Scrub Chat Logs - default",
       "request": {
         "urlPathTemplate": "/users/{user_id}/scrub",
         "method": "POST",
@@ -773,7 +845,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "301bc787-4f0d-409a-b08b-0be5754f4bf2",
+      "uuid": "38c75f24-5d76-479c-b6ca-d2dc221400ad",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -786,8 +858,8 @@
       }
     },
     {
-      "id": "1a1c46d6-08ac-40be-9f28-3458f0843741",
-      "name": "Anonymize User - default",
+      "id": "ca805552-d946-4e1e-80a9-6eb5c8f98247",
+      "name": "Anonymize Chat Logs - default",
       "request": {
         "urlPathTemplate": "/users/{user_id}/anonymize",
         "method": "POST",
@@ -809,7 +881,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "1a1c46d6-08ac-40be-9f28-3458f0843741",
+      "uuid": "ca805552-d946-4e1e-80a9-6eb5c8f98247",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1166,14 +1238,14 @@
       }
     },
     {
-      "id": "a09745e7-9225-4e3f-96b7-de5066bf9713",
-      "name": "Chatwoot Agent Bot Webhook - default",
+      "id": "3f05dbb4-d728-4b9a-9849-7d1e096c44fe",
+      "name": "Chatwoot Agent Bot Webhook - Incoming Visitor Message",
       "request": {
-        "urlPathTemplate": "/channels/{id}/chatwoot",
+        "urlPathTemplate": "/channels/{channelId}/chatwoot",
         "method": "POST",
         "pathParameters": {
-          "id": {
-            "equalTo": "id"
+          "channelId": {
+            "equalTo": "91"
           }
         }
       },
@@ -1184,7 +1256,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "a09745e7-9225-4e3f-96b7-de5066bf9713",
+      "uuid": "3f05dbb4-d728-4b9a-9849-7d1e096c44fe",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -1586,6 +1658,6 @@
     }
   ],
   "meta": {
-    "total": 46
+    "total": 48
   }
 }

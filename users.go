@@ -521,14 +521,17 @@ func (u *User) String() string {
 var (
 	userFlagFieldID       = big.NewInt(1 << 0)
 	userFlagFieldName     = big.NewInt(1 << 1)
-	userFlagFieldUserID   = big.NewInt(1 << 2)
-	userFlagFieldTeamID   = big.NewInt(1 << 3)
-	userFlagFieldSyncedAt = big.NewInt(1 << 4)
+	userFlagFieldKey      = big.NewInt(1 << 2)
+	userFlagFieldUserID   = big.NewInt(1 << 3)
+	userFlagFieldTeamID   = big.NewInt(1 << 4)
+	userFlagFieldSyncedAt = big.NewInt(1 << 5)
 )
 
 type UserFlag struct {
 	ID   *int    `json:"id,omitempty" url:"id,omitempty"`
 	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Optional channel user-attribute key. When null, Agent derives a lowercase snake_case key from name.
+	Key *string `json:"key,omitempty" url:"key,omitempty"`
 	// Upstream owning user id when present (mirrored from Ignite).
 	UserID   *int    `json:"user_id,omitempty" url:"user_id,omitempty"`
 	TeamID   *int    `json:"team_id,omitempty" url:"team_id,omitempty"`
@@ -553,6 +556,13 @@ func (u *UserFlag) GetName() *string {
 		return nil
 	}
 	return u.Name
+}
+
+func (u *UserFlag) GetKey() *string {
+	if u == nil {
+		return nil
+	}
+	return u.Key
 }
 
 func (u *UserFlag) GetUserID() *int {
@@ -602,6 +612,13 @@ func (u *UserFlag) SetID(id *int) {
 func (u *UserFlag) SetName(name *string) {
 	u.Name = name
 	u.require(userFlagFieldName)
+}
+
+// SetKey sets the Key field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UserFlag) SetKey(key *string) {
+	u.Key = key
+	u.require(userFlagFieldKey)
 }
 
 // SetUserID sets the UserID field and marks it as non-optional;

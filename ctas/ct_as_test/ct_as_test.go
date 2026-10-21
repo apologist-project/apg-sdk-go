@@ -88,11 +88,7 @@ func TestCtAsMatchCtasWithWireMock(
 		option.WithBaseURL(WireMockBaseURL),
 		option.WithAPIKey("test-value"),
 	)
-	request := &apgsdkgo.CtaMatchRequest{
-		Unknown: map[string]any{
-			"key": "value",
-		},
-	}
+	request := &apgsdkgo.CtaMatchRequest{}
 	_, invocationErr := client.CtAs.MatchCtas(
 		context.TODO(),
 		request,
